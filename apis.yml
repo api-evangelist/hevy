@@ -40,31 +40,16 @@ tags_raw:
 - personal-training
 - health-data
 apis:
-- name: Hevy Public API
-  description: >-
-    Public REST API for Hevy Pro accounts. 22 operations across workouts (list, create, update, count and a
-    since-based change feed of updates and deletes), routines, routine folders, exercise templates, exercise
-    history and body measurements, plus account info. Authenticated with a per-account UUID API key sent in
-    the api-key request header; page/pageSize pagination on every collection.
+- aid: hevy:hevy-exercisehistory-api
+  name: Hevy Exercise History API
+  description: The ExerciseHistory API from Hevy — 1 operation(s) for exercisehistory.
   humanURL: https://api.hevyapp.com/docs
   baseURL: https://api.hevyapp.com
   tags:
-  - Fitness
-  - Health
-  - Workout Tracking
-  - Strength Training
-  - Health Data
-  - Quantified Self
-  tags_raw:
-  - fitness
-  - health
-  - workout-tracking
-  - strength-training
-  - health-data
-  - quantified-self
+  - ExerciseHistory
   properties:
   - type: OpenAPI
-    url: openapi/hevy-public-api-openapi.json
+    url: openapi/hevy-exercisehistory-api-openapi.yml
   - type: Documentation
     url: https://api.hevyapp.com/docs
   - type: APIReference
@@ -77,34 +62,169 @@ apis:
     url: errors/hevy-problem-types.yml
   - type: DataModel
     url: data-model/hevy-data-model.yml
-  - type: Overlay
-    url: overlays/hevy-public-api-overlay.yaml
-- name: Hevy GPT Action API
-  description: >-
-    OAuth-authenticated action surface behind Hevy's first-party ChatGPT Custom GPT, "Hevy - Gym workout
-    planner". Six operations (list workouts, list/create routines, list/create routine folders, exercise
-    history) served from hevy.com/api/v1 rather than api.hevyapp.com. Hevy publishes the OpenAPI 3.1.0
-    action schema in its own GitHub organization at github.com/hevyapp/hevy-gpt.
-  humanURL: https://github.com/hevyapp/hevy-gpt
-  baseURL: https://hevy.com/api/v1
+  - type: SourceCode
+    url: https://github.com/hevyapp/hevy-gpt
+  - type: Documentation
+    url: https://chatgpt.com/g/g-68278fb711f881919f635175ace543f9-hevy-gym-workout-planner
+- aid: hevy:hevy-exercisetemplates-api
+  name: Hevy Exercise Templates API
+  description: The ExerciseTemplates API from Hevy — 2 operation(s) for exercisetemplates.
+  humanURL: https://api.hevyapp.com/docs
+  baseURL: https://api.hevyapp.com
   tags:
-  - Fitness
-  - Workout Tracking
-  - agent-native
-  - Health Data
-  tags_raw:
-  - fitness
-  - workout-tracking
-  - agent-native
-  - health-data
+  - ExerciseTemplates
   properties:
   - type: OpenAPI
-    url: openapi/hevy-gpt-action-openapi.json
+    url: openapi/hevy-exercisetemplates-api-openapi.yml
+  - type: Documentation
+    url: https://api.hevyapp.com/docs
+  - type: APIReference
+    url: https://api.hevyapp.com/docs
+  - type: Authentication
+    url: authentication/hevy-authentication.yml
+  - type: Conventions
+    url: conventions/hevy-conventions.yml
+  - type: ErrorCatalog
+    url: errors/hevy-problem-types.yml
+  - type: DataModel
+    url: data-model/hevy-data-model.yml
+  - type: SourceCode
+    url: https://github.com/hevyapp/hevy-gpt
+  - type: Documentation
+    url: https://chatgpt.com/g/g-68278fb711f881919f635175ace543f9-hevy-gym-workout-planner
+- aid: hevy:hevy-measurements-api
+  name: Hevy Measurements API
+  description: The Measurements API from Hevy — 2 operation(s) for measurements.
+  humanURL: https://api.hevyapp.com/docs
+  baseURL: https://api.hevyapp.com
+  tags:
+  - Measurements
+  properties:
+  - type: OpenAPI
+    url: openapi/hevy-measurements-api-openapi.yml
+  - type: Documentation
+    url: https://api.hevyapp.com/docs
+  - type: APIReference
+    url: https://api.hevyapp.com/docs
+  - type: Authentication
+    url: authentication/hevy-authentication.yml
+  - type: Conventions
+    url: conventions/hevy-conventions.yml
+  - type: ErrorCatalog
+    url: errors/hevy-problem-types.yml
+  - type: DataModel
+    url: data-model/hevy-data-model.yml
+  - type: SourceCode
+    url: https://github.com/hevyapp/hevy-gpt
+  - type: Documentation
+    url: https://chatgpt.com/g/g-68278fb711f881919f635175ace543f9-hevy-gym-workout-planner
+- aid: hevy:hevy-routinefolders-api
+  name: Hevy Routine Folders API
+  description: The RoutineFolders API from Hevy — 3 operation(s) for routinefolders.
+  humanURL: https://api.hevyapp.com/docs
+  baseURL: https://api.hevyapp.com
+  tags:
+  - RoutineFolders
+  properties:
+  - type: OpenAPI
+    url: openapi/hevy-routinefolders-api-openapi.yml
+  - type: Documentation
+    url: https://api.hevyapp.com/docs
+  - type: APIReference
+    url: https://api.hevyapp.com/docs
+  - type: Authentication
+    url: authentication/hevy-authentication.yml
+  - type: Conventions
+    url: conventions/hevy-conventions.yml
+  - type: ErrorCatalog
+    url: errors/hevy-problem-types.yml
+  - type: DataModel
+    url: data-model/hevy-data-model.yml
+  - type: SourceCode
+    url: https://github.com/hevyapp/hevy-gpt
+  - type: Documentation
+    url: https://chatgpt.com/g/g-68278fb711f881919f635175ace543f9-hevy-gym-workout-planner
+- aid: hevy:hevy-routines-api
+  name: Hevy Routines API
+  description: The Routines API from Hevy — 3 operation(s) for routines.
+  humanURL: https://api.hevyapp.com/docs
+  baseURL: https://api.hevyapp.com
+  tags:
+  - Routines
+  properties:
+  - type: OpenAPI
+    url: openapi/hevy-routines-api-openapi.yml
+  - type: Documentation
+    url: https://api.hevyapp.com/docs
+  - type: APIReference
+    url: https://api.hevyapp.com/docs
+  - type: Authentication
+    url: authentication/hevy-authentication.yml
+  - type: Conventions
+    url: conventions/hevy-conventions.yml
+  - type: ErrorCatalog
+    url: errors/hevy-problem-types.yml
+  - type: DataModel
+    url: data-model/hevy-data-model.yml
+  - type: SourceCode
+    url: https://github.com/hevyapp/hevy-gpt
+  - type: Documentation
+    url: https://chatgpt.com/g/g-68278fb711f881919f635175ace543f9-hevy-gym-workout-planner
+- aid: hevy:hevy-users-api
+  name: Hevy Users API
+  description: The Users API from Hevy — 1 operation(s) for users.
+  humanURL: https://api.hevyapp.com/docs
+  baseURL: https://api.hevyapp.com
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/hevy-users-api-openapi.yml
+  - type: Documentation
+    url: https://api.hevyapp.com/docs
+  - type: APIReference
+    url: https://api.hevyapp.com/docs
+  - type: Authentication
+    url: authentication/hevy-authentication.yml
+  - type: Conventions
+    url: conventions/hevy-conventions.yml
+  - type: ErrorCatalog
+    url: errors/hevy-problem-types.yml
+  - type: DataModel
+    url: data-model/hevy-data-model.yml
+  - type: SourceCode
+    url: https://github.com/hevyapp/hevy-gpt
+  - type: Documentation
+    url: https://chatgpt.com/g/g-68278fb711f881919f635175ace543f9-hevy-gym-workout-planner
+- aid: hevy:hevy-workouts-api
+  name: Hevy Workouts API
+  description: The Workouts API from Hevy — 5 operation(s) for workouts.
+  humanURL: https://api.hevyapp.com/docs
+  baseURL: https://api.hevyapp.com
+  tags:
+  - Workouts
+  properties:
+  - type: OpenAPI
+    url: openapi/hevy-workouts-api-openapi.yml
+  - type: Documentation
+    url: https://api.hevyapp.com/docs
+  - type: APIReference
+    url: https://api.hevyapp.com/docs
+  - type: Authentication
+    url: authentication/hevy-authentication.yml
+  - type: Conventions
+    url: conventions/hevy-conventions.yml
+  - type: ErrorCatalog
+    url: errors/hevy-problem-types.yml
+  - type: DataModel
+    url: data-model/hevy-data-model.yml
   - type: SourceCode
     url: https://github.com/hevyapp/hevy-gpt
   - type: Documentation
     url: https://chatgpt.com/g/g-68278fb711f881919f635175ace543f9-hevy-gym-workout-planner
 common:
+- type: Overlay
+  url: overlays/hevy-public-api-overlay.yaml
 - type: Website
   url: https://www.hevyapp.com
 - type: DeveloperPortal
