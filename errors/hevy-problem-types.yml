@@ -1,0 +1,134 @@
+generated: '2026-08-27'
+method: derived
+format: none
+rfc9457: false
+source: >-
+  Derived from the 4xx/5xx responses declared across the 22 operations in
+  openapi/hevy-public-api-openapi.json, plus a live unauthenticated probe of
+  https://api.hevyapp.com/v1/workouts on 2026-08-27.
+summary: >-
+  Hevy declares 27 error responses across 22 operations, but every one of them is a bare status code
+  and a one-line English description — no schema, no content block, no media type, no error code and
+  no machine-readable body. There is no error envelope to parse. Clients must branch on the HTTP
+  status and, where two errors share a status on the same operation (400 has several meanings), on
+  the operation being called.
+envelope:
+  structured: false
+  media_type_declared: none
+  observed_media_type: text/html; charset=utf-8
+  observed_body: InvalidApiKey
+  observed_status: 401
+  observed_on: GET https://api.hevyapp.com/v1/workouts with an unissued UUID, 2026-08-27
+  note: >-
+    The live 401 is not declared on ANY operation in the spec, and it returns a bare unquoted string
+    with an HTML content type. A client that calls response.json() on a Hevy error will throw. Hevy's
+    own hevy.com/api/v1 proxy demonstrates the bug: it returns
+    {"error":"Internal Server Error","details":"Unexpected token 'I', \"InvalidApiKey\" is not valid
+    JSON"} — the proxy tried to parse its own upstream error and failed.
+status_codes_declared:
+  '200': 19
+  '201': 3
+  '400': 15
+  '403': 2
+  '404': 8
+  '409': 1
+  '500': 1
+undeclared_but_observed:
+- status: 401
+  meaning: Missing or unrecognised api-key header.
+  body: InvalidApiKey
+problems:
+- status: 400
+  title: Invalid page size
+  meaning: page is less than 1, or pageSize exceeds the endpoint maximum (10 on most collections,
+    100 on /v1/exercise_templates).
+  remediation: Clamp pageSize to the documented maximum and page to >= 1.
+  declared_on:
+  - GET /v1/workouts
+  - GET /v1/routines
+  - GET /v1/exercise_templates
+  - GET /v1/routine_folders
+  - GET /v1/body_measurements (declared as "Invalid page or pageSize")
+- status: 400
+  title: Invalid request body
+  meaning: The JSON payload failed validation. No field-level detail is returned — the response says
+    only that the body was invalid.
+  remediation: >-
+    Validate against the request schema in the OpenAPI (PostWorkoutsRequestBody,
+    PostRoutinesRequestBody, PutRoutinesRequestBody, PostRoutineFolderRequestBody,
+    CreateCustomExerciseRequestBody, BodyMeasurement/PutBodyMeasurement) before sending. The API will
+    not tell you which field was wrong.
+  declared_on:
+  - POST /v1/workouts
+  - PUT /v1/workouts/{workoutId}
+  - POST /v1/routines
+  - GET /v1/routines/{routineId}
+  - PUT /v1/routines/{routineId}
+  - POST /v1/exercise_templates
+  - POST /v1/routine_folders
+  - POST /v1/body_measurements
+  - PUT /v1/body_measurements/{date}
+- status: 400
+  title: Invalid request parameters or date format
+  meaning: start_date or end_date on the exercise-history endpoint is malformed.
+  remediation: Send ISO-8601 dates.
+  declared_on:
+  - GET /v1/exercise_history/{exerciseTemplateId}
+- status: 403
+  title: Routine limit exceeded
+  meaning: The account has reached its plan cap on routines; the create was refused.
+  remediation: >-
+    Delete a routine in the Hevy app (there is no API delete) or upgrade the account. An agent cannot
+    resolve this on its own.
+  declared_on:
+  - POST /v1/routines
+- status: 403
+  title: Exceeds custom exercise limit
+  meaning: The account has reached its cap on custom exercise templates.
+  remediation: Remove a custom exercise in the app or upgrade; not resolvable via API.
+  declared_on:
+  - POST /v1/exercise_templates
+- status: 404
+  title: Not found
+  meaning: >-
+    The addressed resource does not exist, or belongs to another account. Per-operation wording:
+    "Workout not found", "User not found", "Routine doesn't exist or doesn't belong to the user",
+    "Exercise template not found", "Routine folder not found", "Body measurement not found", "No
+    measurement found for the given date", and on GET /v1/body_measurements "Page not found".
+  remediation: Verify the id; note that cross-account access is reported as 404, not 403.
+  declared_on:
+  - GET /v1/workouts/{workoutId}
+  - GET /v1/user/info
+  - PUT /v1/routines/{routineId}
+  - GET /v1/exercise_templates/{exerciseTemplateId}
+  - GET /v1/routine_folders/{folderId}
+  - GET /v1/body_measurements
+  - GET /v1/body_measurements/{date}
+  - PUT /v1/body_measurements/{date}
+- status: 409
+  title: A measurement for this date already exists
+  meaning: >-
+    Body measurements are keyed by date, so a create for a date that already has an entry conflicts.
+    This is the only conflict semantics in the API and the only accidental replay protection it has.
+  remediation: Use PUT /v1/body_measurements/{date} to update the existing entry instead.
+  declared_on:
+  - POST /v1/body_measurements
+- status: 500
+  title: Internal Server Error
+  meaning: Declared only on the workout change feed.
+  remediation: Retry with backoff; the `since` cursor makes the call safe to repeat.
+  declared_on:
+  - GET /v1/workouts/events
+- status: 401
+  title: InvalidApiKey
+  meaning: Missing, malformed or unissued api-key header.
+  remediation: >-
+    Re-issue the key at https://hevy.com/settings?developer (Hevy Pro required). Do not retry — the
+    key will not become valid.
+  declared_on: []
+  declared_note: OBSERVED LIVE, NOT DECLARED. No operation in the spec declares a 401.
+gaps:
+- No 429 is declared on any operation and no rate limit is published, so a client has no contract for
+  throttling behaviour.
+- No error responses carry a schema or example, so error handling cannot be generated from the spec.
+- No stable machine-readable error code exists; the English description is the only discriminator.

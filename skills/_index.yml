@@ -1,0 +1,59 @@
+generated: '2026-08-27'
+method: generated
+source: >-
+  Packaged Agent Skills generated from openapi/hevy-public-api-openapi.json, captured 2026-08-27
+  from https://api.hevyapp.com/docs. IMPORTANT — the published Hevy contract declares NO operationId
+  on any of its 22 operations, so every step in every skill below is grounded in a verified METHOD +
+  PATH rather than an operationId. (overlays/hevy-public-api-overlay.yaml proposes operationIds; they
+  are ours, not Hevy's.) Cross-cutting rules cite ../authentication/, ../conventions/, ../errors/,
+  ../rate-limits/ and ../data-model/.
+provider_published_skills:
+  found: false
+  note: >-
+    Hevy publishes no skills/ directory, AGENTS.md or llms.txt. It does publish the configuration of
+    its own ChatGPT Custom GPT at https://github.com/hevyapp/hevy-gpt — captured as
+    openapi/hevy-gpt-action-openapi.json — and the constraints Hevy wrote into that GPT (no routine
+    updates, a reduced exercise library) informed the safety rules in the skills below.
+skills:
+- file: hevy-sync-workout-history.md
+  name: Sync a Hevy training history
+  api: openapi/hevy-public-api-openapi.json
+  operations:
+  - GET /v1/user/info
+  - GET /v1/workouts/count
+  - GET /v1/workouts
+  - GET /v1/workouts/events
+  - GET /v1/workouts/{workoutId}
+- file: hevy-build-training-program.md
+  name: Build a Hevy training program
+  api: openapi/hevy-public-api-openapi.json
+  operations:
+  - GET /v1/exercise_templates
+  - GET /v1/exercise_templates/{exerciseTemplateId}
+  - GET /v1/routine_folders
+  - POST /v1/routine_folders
+  - GET /v1/routines
+  - POST /v1/routines
+  - PUT /v1/routines/{routineId}
+- file: hevy-log-a-workout.md
+  name: Log a workout to Hevy
+  api: openapi/hevy-public-api-openapi.json
+  operations:
+  - GET /v1/workouts
+  - POST /v1/workouts
+  - GET /v1/workouts/{workoutId}
+  - PUT /v1/workouts/{workoutId}
+  - GET /v1/exercise_templates
+  - GET /v1/exercise_history/{exerciseTemplateId}
+- file: hevy-track-body-measurements.md
+  name: Track body measurements in Hevy
+  api: openapi/hevy-public-api-openapi.json
+  operations:
+  - GET /v1/body_measurements
+  - GET /v1/body_measurements/{date}
+  - POST /v1/body_measurements
+  - PUT /v1/body_measurements/{date}
+safety_note: >-
+  Every skill repeats the same three facts because they are the defining constraints of this API:
+  there is no delete operation of any kind, there is no idempotency key, and there is no sandbox.
+  See the reversibility block in ../conventions/hevy-conventions.yml.

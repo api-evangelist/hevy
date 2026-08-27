@@ -1,0 +1,188 @@
+generated: '2026-08-27'
+method: derived
+status: candidate
+source: >-
+  Derived from the 22 operations in openapi/hevy-public-api-openapi.json. Provider search (npm,
+  GitHub, web) on 2026-08-27 found NO Hevy-operated MCP server.
+summary: >-
+  Hevy ships no MCP server. It does ship a first-party AGENT surface — the "Hevy - Gym workout
+  planner" ChatGPT Custom GPT, whose OAuth-authenticated OpenAPI action schema Hevy maintains in its
+  own GitHub organization — but that is a ChatGPT-only integration, not an MCP endpoint any client
+  can reach. The tool list below is a DERIVED CANDIDATE showing what a Hevy MCP server would expose
+  if the company built one. It is not deployed, and no MCPServer pointer is emitted in apis.yml.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: api-key
+  verified: derived
+  note: >-
+    mode is `none` because nobody at Hevy ships a server, remote or stdio. Six community stdio
+    packages exist (see third_party_servers) but they are other people's software wrapping Hevy's
+    REST API with the user's own Pro key; crediting them to Hevy would be wrong.
+first_party_agent_surface:
+  name: Hevy - Gym workout planner (ChatGPT Custom GPT)
+  url: https://chatgpt.com/g/g-68278fb711f881919f635175ace543f9-hevy-gym-workout-planner
+  config_repo: https://github.com/hevyapp/hevy-gpt
+  auth: OAuth (authorization endpoint https://hevy.com/oauth/authorize is live)
+  contract: openapi/hevy-gpt-action-openapi.json
+  transport: ChatGPT Actions (HTTP), not MCP
+  operations:
+  - id: get-workouts
+    rest: GET /api/v1/workouts
+  - id: get-routines
+    rest: GET /api/v1/routines
+  - id: post-routine
+    rest: POST /api/v1/routines
+  - id: get-routine-folders
+    rest: GET /api/v1/routine_folders
+  - id: post-routine-folder
+    rest: POST /api/v1/routine_folders
+  - id: get-exercise-history
+    rest: GET /v1/exercise_history/{exerciseTemplateId}
+  constraints_verbatim:
+  - '"If asked to update an existing routine. Explain you aren''t allowed to do that." — the GPT
+    instructions deliberately withhold the update surface from the agent.'
+  - The GPT is pinned to a reduced library of ~100 exercise templates because "it seems to perform
+    better if there are fewer exercises to choose from".
+  note: >-
+    This is a real, first-party, agent-facing contract and it is narrower than the public API on
+    purpose: 6 read/create operations, no updates, no body measurements, no workout writes. It is
+    the clearest statement Hevy has made about what it considers safe for an agent to do.
+candidate_tools:
+- name: list_workouts
+  category: workouts
+  rest: GET /v1/workouts
+  consequence: read
+- name: get_workout
+  category: workouts
+  rest: GET /v1/workouts/{workoutId}
+  consequence: read
+- name: count_workouts
+  category: workouts
+  rest: GET /v1/workouts/count
+  consequence: read
+- name: list_workout_events
+  category: workouts
+  rest: GET /v1/workouts/events
+  consequence: read
+  note: Delta sync since a timestamp — the right tool for keeping an agent's cache current.
+- name: create_workout
+  category: workouts
+  rest: POST /v1/workouts
+  consequence: write
+  irreversible: true
+- name: update_workout
+  category: workouts
+  rest: PUT /v1/workouts/{workoutId}
+  consequence: write
+  irreversible: true
+- name: get_user_info
+  category: account
+  rest: GET /v1/user/info
+  consequence: read
+- name: list_routines
+  category: routines
+  rest: GET /v1/routines
+  consequence: read
+- name: get_routine
+  category: routines
+  rest: GET /v1/routines/{routineId}
+  consequence: read
+- name: create_routine
+  category: routines
+  rest: POST /v1/routines
+  consequence: write
+  irreversible: true
+  note: Consumes a capped, non-reclaimable allowance — 403 "Routine limit exceeded".
+- name: update_routine
+  category: routines
+  rest: PUT /v1/routines/{routineId}
+  consequence: write
+  irreversible: true
+- name: list_routine_folders
+  category: routines
+  rest: GET /v1/routine_folders
+  consequence: read
+- name: get_routine_folder
+  category: routines
+  rest: GET /v1/routine_folders/{folderId}
+  consequence: read
+- name: create_routine_folder
+  category: routines
+  rest: POST /v1/routine_folders
+  consequence: write
+  irreversible: true
+  note: No update and no delete exists for folders — the least reversible write in the API.
+- name: list_exercise_templates
+  category: exercises
+  rest: GET /v1/exercise_templates
+  consequence: read
+- name: get_exercise_template
+  category: exercises
+  rest: GET /v1/exercise_templates/{exerciseTemplateId}
+  consequence: read
+- name: create_custom_exercise_template
+  category: exercises
+  rest: POST /v1/exercise_templates
+  consequence: write
+  irreversible: true
+- name: get_exercise_history
+  category: exercises
+  rest: GET /v1/exercise_history/{exerciseTemplateId}
+  consequence: read
+- name: list_body_measurements
+  category: measurements
+  rest: GET /v1/body_measurements
+  consequence: read
+- name: get_body_measurement
+  category: measurements
+  rest: GET /v1/body_measurements/{date}
+  consequence: read
+- name: create_body_measurement
+  category: measurements
+  rest: POST /v1/body_measurements
+  consequence: write
+  note: 409 on a date that already has an entry — the only replay protection in the API.
+- name: update_body_measurement
+  category: measurements
+  rest: PUT /v1/body_measurements/{date}
+  consequence: write
+  irreversible: true
+candidate_tool_count: 22
+third_party_servers:
+  note: >-
+    Community-built, NOT operated by Hevy. Listed for accuracy — a future round must not promote any
+    of these into a first-party MCPServer pointer.
+  servers:
+  - name: hevy-mcp
+    author: chrisdoc
+    repo: https://github.com/chrisdoc/hevy-mcp
+    package: https://www.npmjs.com/package/hevy-mcp
+    mode: local-stdio
+    version: 6.1.6
+    published: '2026-08-24'
+  - name: '@iantay/hevy-mcp'
+    package: https://www.npmjs.com/package/@iantay/hevy-mcp
+    mode: local-stdio
+    version: 1.19.0
+    published: '2026-01-10'
+  - name: hevy-mcp (Rust)
+    author: zelosleone
+    repo: https://github.com/zelosleone/hevy-mcp
+    mode: local-stdio
+    transport_note: Author advertises HTTP transport with session management.
+  - name: hevy-mcp
+    author: zurfyx
+    repo: https://github.com/zurfyx/hevy-mcp
+    mode: local-stdio
+    note: Read-only by default; mutating tools require an explicit --write flag.
+  - name: hevy-mcp-server
+    author: madebydia
+    repo: https://github.com/madebydia/hevy-mcp-server
+    mode: local-stdio
+agent_readiness_note: >-
+  All 22 candidate tools would inherit the API's real constraints: one account-wide key with no
+  scopes, no idempotency key, no rate-limit signal, and no delete operation anywhere — so every write
+  tool above is marked irreversible on purpose. See conventions/hevy-conventions.yml.

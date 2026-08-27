@@ -1,0 +1,106 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://api.hevyapp.com/docs + https://www.hevyapp.com/status/ +
+  https://www.hevyapp.com/community-updates/ + https://www.hevyapp.com/legal/terms-and-conditions/
+  (all probed 2026-08-27).
+summary: >-
+  Hevy runs a status page and a monthly product update log, but publishes nothing about the API's own
+  lifecycle: no API changelog, no versioning policy, no deprecation or sunset policy, no SLA and no
+  roadmap. The provider states in the contract itself that the API may change or be withdrawn without
+  notice, which is the clearest lifecycle signal available and it is a warning rather than a
+  commitment.
+versioning:
+  scheme: uri-path
+  current: v1
+  policy_documented: false
+  stability_statement_verbatim: >-
+    "We're just starting to roll this out and depending on your feedback, we'll be adding more
+    features and endpoints. Also, we make no guarantees that we won't completely change the structure
+    or abandon the project entirely so use it at your own risk."
+  stability_statement_source: info.description of the published OpenAPI at https://api.hevyapp.com/docs
+  spec_version_declared: 0.0.1
+  spec_version_note: >-
+    info.version is "0.0.1" in the live spec — the document has never been version-stamped against a
+    release. The GPT action copy in github.com/hevyapp/hevy-gpt declares "1.0.0" for a different,
+    smaller surface. There is no way to tell from either document which build is deployed.
+changelog:
+  api_changelog_published: false
+  product_changelog:
+    url: https://www.hevyapp.com/community-updates/
+    status: 200
+    cadence: monthly, irregular
+    scope: product releases (app features), not API changes
+    artifact: changelog/hevy-changelog.yml
+  note: >-
+    No API changelog exists on any host. The community updates page covers the consumer app and does
+    not mention API endpoints.
+status_page:
+  url: https://www.hevyapp.com/status/
+  status: 200
+  provider: self-hosted (a WordPress page on the marketing site)
+  machine_readable_api: false
+  components_listed: false
+  incident_history: false
+  observed_state: '"Systems Operational — Hevy is running smoothly."'
+  note: >-
+    This is a hand-maintained page, not a hosted status platform: there is no /api/v2/summary.json, no
+    per-component state, no incident archive, no subscribe option and no RSS. It states one of two
+    hard-coded conditions. A StatusPage pointer IS emitted — the page exists and is served — but it
+    cannot be polled by a monitoring agent.
+  checked: '2026-08-27'
+deprecation:
+  policy_documented: false
+  sunset_header: false
+  deprecated_operations: []
+  note: >-
+    No RFC 8594 Deprecation/Sunset headers, no deprecation policy page, and no operation in the
+    22-operation contract carries `deprecated: true`. NO Deprecation pointer is emitted.
+sla:
+  documented: false
+  note: >-
+    No uptime commitment, support-response target or credit scheme is published for the API. The
+    consumer terms of service govern the app, not an API service level.
+support:
+  channels:
+  - type: help center
+    url: https://www.hevyapp.com/help/
+    status: 200
+  - type: zendesk
+    url: https://hevyapp.zendesk.com/hc/en-us
+  - type: contact form
+    url: https://www.hevyapp.com/contact/
+    status: 200
+  - type: named contact for the API
+    value: pavel@hevyapp.com
+    source: info.description of the published OpenAPI
+    note: >-
+      The API contract names a single individual as the contact point. That is unusually direct and
+      genuinely useful, but it is a person, not a support queue.
+  - type: community
+    url: https://www.reddit.com/r/Hevy/
+roadmap:
+  published: false
+  probed:
+  - url: https://www.hevyapp.com/roadmap/
+    status: 404
+    checked: '2026-08-27'
+terms:
+  url: https://www.hevyapp.com/legal/terms-and-conditions/
+  status: 200
+  privacy: https://www.hevyapp.com/legal/privacy-policy/
+  cookies: https://www.hevyapp.com/legal/cookie-policy/
+  api_specific_terms: false
+  note: The published legal set is consumer app terms; there is no separate API/developer agreement.
+operator:
+  legal_entity: Hevy Studios, S.L.
+  jurisdiction: Spain
+  source: site-wide footer on https://www.hevyapp.com
+observed_infrastructure:
+  api_host: api.hevyapp.com
+  platform: Heroku (server:Heroku, via:heroku-router, x-powered-by:Express)
+  method: probed
+  checked: '2026-08-27'
+  note: >-
+    Recorded because it bounds what can be expected operationally — a single Heroku dyno-fronted
+    Express app with no gateway, no rate-limit headers and no request-id.

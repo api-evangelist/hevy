@@ -1,0 +1,207 @@
+generated: '2026-08-27'
+method: derived
+source: >-
+  openapi/hevy-public-api-openapi.json (22 operations, harvested 2026-08-27 from
+  https://api.hevyapp.com/docs) plus live header/response observation on
+  https://api.hevyapp.com/v1/workouts.
+summary: >-
+  Cross-cutting semantics for the Hevy Public API. It is a small, plain REST surface: one header
+  credential, page/pageSize pagination everywhere, JSON bodies, snake_case fields, and a delta
+  change-feed instead of webhooks. There is no idempotency mechanism, no rate-limit signalling, no
+  request-id header, no versioning policy beyond the /v1 path segment, and no structured error
+  envelope. Nothing here is asserted that the contract or a live response does not show.
+authentication:
+  style: api_key_header
+  header: api-key
+  format: uuid
+  see: authentication/hevy-authentication.yml
+base_url: https://api.hevyapp.com
+versioning:
+  style: uri-path
+  current: v1
+  segment: /v1/
+  policy_documented: false
+  note: >-
+    Every path carries /v1/. No version negotiation header, no dated versions, and no published
+    policy on how a v2 would be introduced. The provider's own spec description warns: "we make no
+    guarantees that we won't completely change the structure or abandon the project entirely so use
+    it at your own risk."
+media_types:
+  request: application/json
+  response: application/json
+  errors: text/plain served with a text/html content type (observed on the live 401)
+naming:
+  fields: snake_case (start_time, end_time, exercise_template_id, superset_id, weight_kg, reps, rpe)
+  paths: snake_case (/v1/exercise_templates, /v1/routine_folders, /v1/body_measurements)
+  ids: >-
+    Workouts, routines and folders use opaque string ids; exercise templates use short uppercase
+    hex-looking ids (e.g. 79D0BB3A "Bench Press (Barbell)"); body measurements are keyed by DATE
+    (YYYY-MM-DD) rather than by a synthetic id.
+pagination:
+  style: page-number
+  params:
+  - name: page
+    in: query
+    default: 1
+    rule: Must be 1 or greater.
+  - name: pageSize
+    in: query
+    default: 5
+    note: Default is 5 on every collection except /v1/body_measurements, where it is 10.
+  max_page_size:
+    default: 10
+    exceptions:
+    - path: /v1/exercise_templates
+      max: 100
+  response_fields:
+  - page
+  - page_count
+  - the collection array, named after the resource (workouts, routines, exercise_templates,
+    routine_folders, events)
+  cursor_support: false
+  total_count:
+    supported_via: GET /v1/workouts/count
+    note: A dedicated count endpoint exists for workouts only; other collections expose page_count
+      but no absolute total.
+  on_violation: 400 "Invalid page size"
+  agent_note: >-
+    A 10-item page cap with no cursor makes a full-history read expensive and chatty. An agent
+    walking a large training log will issue hundreds of sequential requests against an API that
+    publishes no rate limit, so it should self-throttle.
+change_feed:
+  supported: true
+  operation: GET /v1/workouts/events
+  params:
+    since: RFC 3339 timestamp, default 1970-01-01T00:00:00Z
+  ordering: newest to oldest
+  event_types:
+  - updated (carries the full Workout object)
+  - deleted (carries only the workout id and deleted_at)
+  purpose_verbatim: >-
+    "The intention is to allow clients to keep their local cache of workouts up to date without
+    having to fetch the entire list of workouts."
+  note: >-
+    This is Hevy's substitute for webhooks — polled, not pushed. It covers WORKOUTS ONLY: there is no
+    change feed for routines, folders, exercise templates or body measurements. No AsyncAPI document
+    and no webhook catalog exist, so no AsyncAPI or Webhooks pointer is emitted.
+field_expansion:
+  supported: false
+sparse_fieldsets:
+  supported: false
+filtering:
+  supported: partially
+  note: >-
+    Only two filters exist in the whole API — `since` on /v1/workouts/events and
+    `start_date`/`end_date` on /v1/exercise_history/{exerciseTemplateId}. Collections cannot be
+    filtered, sorted or searched.
+metadata:
+  supported: false
+request_tracing:
+  supported: false
+  note: >-
+    No x-request-id, correlation-id or trace header is documented, and none was returned on the live
+    401 (only Heroku router/NEL headers). There is no identifier to quote to support when a call
+    fails.
+rate_limit_signaling:
+  supported: false
+  headers: []
+  see: rate-limits/hevy-rate-limits.yml
+  note: >-
+    No X-RateLimit-*, RateLimit-* or Retry-After header is documented or observed, and no 429 is
+    declared on any of the 22 operations.
+error_envelope:
+  structured: false
+  rfc9457: false
+  observed: 'Bare string body `InvalidApiKey` (HTTP 401), content-type text/html; charset=utf-8.'
+  in_spec: >-
+    4xx/5xx responses are declared with a human-readable `description` only — no schema, no content
+    block, no media type. A client cannot machine-parse a Hevy error; it must branch on status code.
+  see: errors/hevy-problem-types.yml
+idempotency:
+  documented: false
+  header: null
+  na: false
+  notes: >-
+    Zero matches for "idempoten" in the full spec text. Two of the three creates are plainly NOT
+    idempotent — POST /v1/workouts and POST /v1/routines will create duplicates on replay — and there
+    is no client-supplied key, no dedupe window and no conditional-request support (no ETag, no
+    If-Match) anywhere in the API. POST /v1/body_measurements is the one exception, and only by
+    accident of its natural key: a second create for the same date returns 409 rather than
+    duplicating. PUT operations are inherently idempotent. NO `Idempotency` pointer is emitted for
+    this provider — the agent-readiness idempotency dimension is a genuine zero, not a missing
+    pointer.
+  agent_risk: >-
+    An agent that times out mid-POST and retries will silently log the same workout twice, and the
+    API offers no way to detect or undo it (see reversibility below).
+dry_run_mode:
+  supported: false
+  na: false
+  note: There is no test mode, sandbox account, validate-only flag or preview parameter. Every write
+    lands on the caller's real training log.
+reversibility:
+  grade: absent
+  has_write_surface: true
+  na: false
+  summary: >-
+    Hevy's API can create workouts, routines, folders, custom exercise templates and body
+    measurements, and it can update most of them — but it exposes NO delete, cancel, void, undo or
+    restore operation of any kind. There is not a single DELETE verb in the 22-operation contract.
+    Once an agent writes, the only remedies are an in-place overwrite where a PUT exists, or a human
+    opening the Hevy app and deleting the object by hand.
+  write_surfaces:
+  - operation: POST /v1/workouts
+    creates: Workout
+    reversal_operation: null
+    partial_remedy: PUT /v1/workouts/{workoutId} can overwrite the workout's contents, but cannot
+      remove the workout itself.
+    window: null
+  - operation: PUT /v1/workouts/{workoutId}
+    mutates: Workout
+    reversal_operation: null
+    partial_remedy: >-
+      None. The prior state is not returned by the update and there is no version history, so an
+      agent must snapshot the workout with GET before it writes if it wants to be able to restore it.
+    window: null
+  - operation: POST /v1/routines
+    creates: Routine
+    reversal_operation: null
+    partial_remedy: PUT /v1/routines/{routineId} overwrites; the routine cannot be deleted via API.
+    window: null
+    note: Subject to a plan cap — 403 "Routine limit exceeded". Unreversible creates therefore
+      consume a finite, non-reclaimable allowance.
+  - operation: POST /v1/routine_folders
+    creates: RoutineFolder
+    reversal_operation: null
+    partial_remedy: None — there is no update or delete for folders. A folder created in error is
+      permanent until a human removes it in the app.
+    window: null
+  - operation: POST /v1/exercise_templates
+    creates: Custom ExerciseTemplate
+    reversal_operation: null
+    partial_remedy: None. Subject to a 403 "Exceeds custom exercise limit" cap.
+    window: null
+  - operation: POST /v1/body_measurements
+    creates: BodyMeasurement (keyed by date)
+    reversal_operation: null
+    partial_remedy: PUT /v1/body_measurements/{date} overwrites the entry for that date; there is no
+      way to remove the date entirely.
+    window: null
+  - operation: PUT /v1/body_measurements/{date}
+    mutates: BodyMeasurement
+    reversal_operation: null
+    partial_remedy: None; no prior-value echo, no history.
+    window: null
+  stated_windows: []
+  windows_note: >-
+    No reversal window is stated anywhere, because no reversal operation exists. Nothing here is
+    inferred — every row above was read off the operation list in the published contract.
+  agent_guidance: >-
+    Treat every Hevy write as irreversible. Read before you write, keep the pre-write payload so an
+    overwrite can restore it, and never retry a POST on an ambiguous failure — confirm with a GET
+    first, because a duplicate cannot be cleaned up through the API.
+cross_links:
+  errors: errors/hevy-problem-types.yml
+  lifecycle: lifecycle/hevy-lifecycle.yml
+  authentication: authentication/hevy-authentication.yml
+  rate_limits: rate-limits/hevy-rate-limits.yml
+  data_model: data-model/hevy-data-model.yml

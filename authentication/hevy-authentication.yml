@@ -1,0 +1,92 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://api.hevyapp.com/docs (Swagger UI; the OpenAPI document is embedded in
+  /docs/swagger-ui-init.js) + https://github.com/hevyapp/hevy-gpt + live probes of
+  https://api.hevyapp.com/v1/workouts and https://hevy.com/oauth/authorize on 2026-08-27.
+summary: >-
+  Hevy runs two distinct authenticated surfaces. The public REST API on api.hevyapp.com takes a
+  per-account UUID API key in an `api-key` request header, issued to Hevy Pro subscribers from the web
+  app at https://hevy.com/settings?developer. Hevy's own ChatGPT Custom GPT calls a different host,
+  hevy.com/api/v1, over OAuth 2.0 — the authorization endpoint https://hevy.com/oauth/authorize is
+  live (307 to /login when unauthenticated) — but Hevy publishes no OAuth client registration flow,
+  token endpoint, or scope reference, so OAuth is in practice a first-party-only surface.
+schemes:
+- id: api-key-header
+  type: apiKey
+  in: header
+  name: api-key
+  format: uuid
+  applies_to: https://api.hevyapp.com (all 22 operations)
+  declared_as_security_scheme: false
+  declared_note: >-
+    IMPORTANT SPEC GAP — the published OpenAPI declares NO `components.securitySchemes` and no
+    `security` block anywhere. The key is modelled instead as a `required: true` header PARAMETER
+    named `api-key` (schema type string, format uuid) repeated on all 22 operations. Functionally
+    identical for a human reader; invisible to any tool that reads securitySchemes, including
+    most codegen and every scorer that checks "securitySchemes defined + applied". Our overlay
+    (overlays/hevy-public-api-overlay.yaml) proposes the missing ApiKeyAuth scheme.
+  issuance:
+    self_serve: true
+    url: https://hevy.com/settings?developer
+    gate: Hevy Pro subscription required
+    probed:
+    - url: https://hevy.com/settings?developer
+      status: 200
+      note: 302/307s to /login?postLoginPath=%2Fsettings%3Fdeveloper%3D for anonymous callers.
+  rotation_documented: false
+  expiry_documented: false
+  scopes: none
+  transport: HTTPS only (TLSv1.3 observed)
+  failure:
+    status: 401
+    body: InvalidApiKey
+    media_type: text/html; charset=utf-8
+    note: >-
+      Observed live 2026-08-27 with a syntactically valid but unissued UUID. The body is the bare
+      string `InvalidApiKey` with a text/html content type — not JSON, not RFC 9457, and not declared
+      anywhere in the OpenAPI (no operation declares a 401). See errors/hevy-problem-types.yml.
+- id: oauth2-gpt-action
+  type: oauth2
+  flow: authorization_code
+  applies_to: https://hevy.com/api/v1 (6 operations, Hevy's own ChatGPT Custom GPT)
+  authorization_endpoint: https://hevy.com/oauth/authorize
+  token_endpoint: null
+  token_endpoint_note: >-
+    Not published. Probed https://hevy.com/oauth/token and https://hevy.com/api/oauth/token on
+    2026-08-27 — both 404. The value lives only in the GPT's private action configuration.
+  scopes_documented: false
+  dynamic_client_registration: false
+  discovery:
+    oauth_authorization_server: 404
+    oauth_protected_resource: 404
+    openid_configuration: 404
+    note: >-
+      No RFC 8414 / RFC 9728 / OIDC discovery document on any Hevy host — see
+      well-known/hevy-well-known.yml. A third-party agent cannot self-onboard to this surface.
+  evidence:
+  - url: https://hevy.com/oauth/authorize
+    status: 307
+    location: /login?postLoginPath=%2Foauth%2Fauthorize
+    checked: '2026-08-27'
+  - url: https://github.com/hevyapp/hevy-gpt
+    status: 200
+    note: 'README "#### Authentication" section for the api.hevyapp.com action reads simply: OAuth.'
+    checked: '2026-08-27'
+mtls: false
+openid_connect: false
+signed_requests: false
+cors:
+  allow_origin: '*'
+  allow_headers: Origin, X-Requested-With, Content-Type, Accept, api-key
+  allow_methods: GET, POST, PUT, PATCH, DELETE, OPTIONS
+  method: probed
+  note: >-
+    Observed on the live 401 from api.hevyapp.com. The API key is a bearer-equivalent secret and the
+    API sets Access-Control-Allow-Origin `*`, so browser-side use of a Hevy key exposes it to any
+    origin; keys belong on a server.
+agent_notes: >-
+  For an autonomous agent the only reachable door is the api-key header, and it cannot be obtained
+  programmatically — a human must hold a Hevy Pro subscription and copy the key out of the web app.
+  There is no OAuth flow an arbitrary client can complete, no scopes, and no way to issue a
+  reduced-privilege credential: one key grants full read AND write over the whole account.

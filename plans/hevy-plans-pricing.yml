@@ -1,0 +1,67 @@
+generated: '2026-08-27'
+method: searched
+source: https://www.hevy.com/pricing
+checked: '2026-08-27'
+plan_count: 2
+summary: >-
+  Hevy sells one consumer upgrade — Hevy Pro — on top of a free tier, and API access is a Pro
+  entitlement rather than a separate developer plan. There is no API pricing page, no metered API
+  tier, no credit pack and no enterprise API contract published anywhere.
+prices_published: false
+prices_published_note: >-
+  https://www.hevy.com/pricing returns HTTP 200 but is a Next.js page whose prices are injected at
+  runtime by Paddle (cdn.paddle.com/paddle/v2/paddle.js); the served HTML is a 10,569-byte shell
+  containing the string "Loading..." and no amount, currency or billing period. Mobile purchases run
+  through the App Store and Play Store, where the price is set per storefront. Consequently NO price
+  is recorded below — the provider does not publish a static one, and third-party review sites are
+  not an acceptable source for a field that reads as provider-published.
+currency: null
+billing_period: null
+public_signup_pricing: true
+plans:
+- name: Hevy (Free)
+  price: null
+  currency: null
+  billing_period: null
+  positioning: Free workout tracking — log workouts, build routines, use the exercise library.
+  api_access: false
+  included_quota: null
+  overage: null
+  limits:
+    note: >-
+      The free tier is capped on routines and on custom exercises; the API surfaces those caps as
+      403 "Routine limit exceeded" and 403 "Exceeds custom exercise limit". The numeric caps are not
+      published on any Hevy-owned page.
+- name: Hevy Pro
+  price: null
+  currency: null
+  billing_period: null
+  positioning: >-
+    Paid upgrade to the consumer app. Sold monthly, annually and as a one-off lifetime purchase via
+    Paddle on the web and via the App Store / Play Store on mobile.
+  api_access: true
+  api_access_evidence: >-
+    "Currently, this API is only available to Hevy Pro users. You can get your key on our web app at
+    https://hevy.com/settings?developer." — info.description of the published OpenAPI at
+    https://api.hevyapp.com/docs.
+  included_quota: null
+  overage: null
+  limits:
+    api_rate_limit: none published (see rate-limits/hevy-rate-limits.yml)
+    api_seats: 1 key per account
+api_pricing:
+  separate_developer_plan: false
+  metered: false
+  free_tier_for_api: false
+  note: >-
+    There is no way to buy API access on its own. An integration's cost is exactly one Hevy Pro
+    subscription per END USER whose data is being read — every key is personal and account-scoped —
+    which makes multi-user integrations a per-seat proposition the provider has never priced as one.
+probed:
+- url: https://www.hevy.com/pricing
+  status: 200
+  note: 200 with a client-rendered Paddle shell; no prices in the HTML.
+  checked: '2026-08-27'
+- url: https://www.hevyapp.com/pricing/
+  status: 404
+  checked: '2026-08-27'

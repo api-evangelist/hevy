@@ -1,0 +1,163 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Hevy Public API
+  version: 1.0.0
+extends: openapi/hevy-public-api-openapi.json
+x-provenance:
+  generated: '2026-08-27'
+  method: generated
+  source: >-
+    Generated from openapi/hevy-public-api-openapi.json (harvested 2026-08-27 from
+    https://api.hevyapp.com/docs/swagger-ui-init.js). This overlay records OUR enhancements only; the
+    original document is never mutated. Nothing here changes Hevy's semantics — it adds the machine
+    metadata the published contract omits (servers, securitySchemes, tag declarations, operationIds)
+    plus contact details Hevy states in prose inside info.description.
+  rationale: >-
+    The Hevy contract is functionally complete for a human reading Swagger UI, but four omissions make
+    it hard for machines: (1) no servers[] block, so no generated client knows the base URL; (2) no
+    components.securitySchemes, so the api-key credential is invisible to every securityScheme-aware
+    tool even though it is a required header on all 22 operations; (3) no top-level tags[]
+    declarations, though all 22 operations are tagged; (4) no operationIds on any operation, so
+    generated method names are positional and unstable. Hevy's own ChatGPT action spec DOES declare
+    operationIds, which is the precedent followed below.
+actions:
+- target: $
+  description: Declare the production base URL. api.hevyapp.com is the host named in the provider's
+    own docs, footer "Public API" link and every community client.
+  update:
+    servers:
+    - url: https://api.hevyapp.com
+      description: Production
+- target: $.info
+  description: Lift the contact and terms Hevy states in prose into structured info fields.
+  update:
+    contact:
+      name: Hevy API
+      email: pavel@hevyapp.com
+      url: https://api.hevyapp.com/docs
+    termsOfService: https://www.hevyapp.com/legal/terms-and-conditions/
+    x-api-evangelist-note: >-
+      contact.email is quoted verbatim from Hevy's own info.description ("If you have any questions,
+      please reach out to pavel@hevyapp.com"). termsOfService is the company's published consumer
+      terms; Hevy publishes no separate developer agreement.
+- target: $
+  description: Declare the tags every operation already uses.
+  update:
+    tags:
+    - name: Workouts
+      description: Completed training sessions, their contents, a total count, and a since-based
+        change feed of updates and deletions.
+    - name: Routines
+      description: Reusable workout plans.
+    - name: RoutineFolders
+      description: Ordered containers for routines.
+    - name: ExerciseTemplates
+      description: The exercise catalogue — built-in library plus the account's custom exercises.
+    - name: ExerciseHistory
+      description: Set-level history for one exercise template across all workouts.
+    - name: Measurements
+      description: Dated body-composition and tape measurements.
+    - name: Users
+      description: The authenticated account's identity.
+- target: $.components
+  description: >-
+    Declare the api-key credential as a securityScheme. It is currently modelled only as a repeated
+    required header parameter, which no securityScheme-reading tool will find.
+  update:
+    securitySchemes:
+      ApiKeyAuth:
+        type: apiKey
+        in: header
+        name: api-key
+        description: >-
+          Per-account UUID issued to Hevy Pro subscribers at https://hevy.com/settings?developer. One
+          key grants full read and write over the entire account; there are no scopes and no
+          reduced-privilege credential.
+- target: $
+  description: Apply the credential globally, matching the fact that all 22 operations require it.
+  update:
+    security:
+    - ApiKeyAuth: []
+- target: $.paths['/v1/workouts'].get
+  update:
+    operationId: listWorkouts
+- target: $.paths['/v1/workouts'].post
+  update:
+    operationId: createWorkout
+    x-irreversible: true
+    x-reversal-operation: none
+- target: $.paths['/v1/workouts/count'].get
+  update:
+    operationId: countWorkouts
+- target: $.paths['/v1/workouts/events'].get
+  update:
+    operationId: listWorkoutEvents
+- target: $.paths['/v1/workouts/{workoutId}'].get
+  update:
+    operationId: getWorkout
+- target: $.paths['/v1/workouts/{workoutId}'].put
+  update:
+    operationId: updateWorkout
+    x-irreversible: true
+    x-reversal-operation: none
+- target: $.paths['/v1/user/info'].get
+  update:
+    operationId: getUserInfo
+- target: $.paths['/v1/routines'].get
+  update:
+    operationId: listRoutines
+- target: $.paths['/v1/routines'].post
+  update:
+    operationId: createRoutine
+    x-irreversible: true
+    x-reversal-operation: none
+- target: $.paths['/v1/routines/{routineId}'].get
+  update:
+    operationId: getRoutine
+- target: $.paths['/v1/routines/{routineId}'].put
+  update:
+    operationId: updateRoutine
+    x-irreversible: true
+    x-reversal-operation: none
+- target: $.paths['/v1/exercise_templates'].get
+  update:
+    operationId: listExerciseTemplates
+- target: $.paths['/v1/exercise_templates'].post
+  update:
+    operationId: createCustomExerciseTemplate
+    x-irreversible: true
+    x-reversal-operation: none
+- target: $.paths['/v1/exercise_templates/{exerciseTemplateId}'].get
+  update:
+    operationId: getExerciseTemplate
+- target: $.paths['/v1/routine_folders'].get
+  update:
+    operationId: listRoutineFolders
+- target: $.paths['/v1/routine_folders'].post
+  update:
+    operationId: createRoutineFolder
+    x-irreversible: true
+    x-reversal-operation: none
+- target: $.paths['/v1/routine_folders/{folderId}'].get
+  update:
+    operationId: getRoutineFolder
+- target: $.paths['/v1/exercise_history/{exerciseTemplateId}'].get
+  update:
+    operationId: getExerciseHistory
+- target: $.paths['/v1/body_measurements'].get
+  update:
+    operationId: listBodyMeasurements
+- target: $.paths['/v1/body_measurements'].post
+  update:
+    operationId: createBodyMeasurement
+    x-idempotency-note: >-
+      Not idempotent by design, but naturally replay-safe — a second create for the same date returns
+      409 rather than duplicating. This is the only such protection in the API.
+- target: $.paths['/v1/body_measurements/{date}'].get
+  update:
+    operationId: getBodyMeasurement
+- target: $.paths['/v1/body_measurements/{date}'].put
+  update:
+    operationId: updateBodyMeasurement
+    x-irreversible: true
+    x-reversal-operation: none

@@ -1,0 +1,156 @@
+generated: '2026-08-27'
+method: derived
+source: >-
+  openapi/hevy-public-api-openapi.json + openapi/hevy-gpt-action-openapi.json + live probes of
+  /.well-known/* on api.hevyapp.com, www.hevyapp.com and hevy.com + security/hevy-domain-security.yml
+  (all 2026-08-27).
+summary: >-
+  Hevy conforms to OpenAPI 3.0/3.1 as a document format and to nothing else. Every cross-cutting
+  standard this pipeline checks — RFC 9457 problem details, RFC 9116 security.txt, RFC 8414/9728
+  OAuth discovery, OIDC discovery, RFC 8594 sunset, IETF RateLimit headers, idempotency,
+  ETag/conditional requests — is absent. No compliance certification (SOC 2, ISO 27001, HIPAA, GDPR
+  attestation) is published anywhere on the company's sites, so NO Compliance pointer is emitted.
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: >-
+    api.hevyapp.com serves a valid OpenAPI 3.0.0 document (22 operations, 28 schemas) embedded in
+    https://api.hevyapp.com/docs/swagger-ui-init.js and rendered by Swagger UI at
+    https://api.hevyapp.com/docs. Captured to openapi/hevy-public-api-openapi.json.
+  caveat: >-
+    The spec is NOT served at a stable machine-readable URL. /openapi.json, /swagger.json, /docs-json,
+    /docs-yaml and /api-docs all 404 on the API host; the only copy is inside the Swagger UI
+    bootstrap JavaScript. A machine consumer has to scrape a JS file to get the contract.
+- id: openapi-3.1
+  conforms: true
+  evidence: >-
+    github.com/hevyapp/hevy-gpt publishes a first-party OpenAPI 3.1.0 action schema (6 operations,
+    servers https://hevy.com) for Hevy's own ChatGPT Custom GPT. Captured to
+    openapi/hevy-gpt-action-openapi.json.
+  caveat: >-
+    The published copy contains a trailing comma and is therefore not valid JSON as distributed; our
+    saved copy is byte-identical apart from removing trailing commas so it parses. The raw text is
+    preserved at openapi/_original/hevy-gpt-action-openapi.raw.json.txt.
+- id: openapi-security-schemes
+  conforms: false
+  evidence: >-
+    Neither document declares components.securitySchemes or a security requirement. The public API
+    models its credential as a repeated required header PARAMETER (`api-key`) on all 22 operations,
+    which no securityScheme-reading tool will see.
+- id: operationid-uniqueness
+  conforms: false
+  evidence: >-
+    ZERO of the 22 operations in the public API spec declare an operationId. (The 6-operation GPT
+    action spec does declare them — get-workouts, get-routines, post-routine, get-routine-folders,
+    post-routine-folder, get-exercise-history — which is why the agent surface is more usable than
+    the public one.) Our overlay proposes operationIds for the public spec.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    No application/problem+json anywhere. Error responses declare a description string and no
+    content/schema at all; the live 401 returns the bare string `InvalidApiKey` with a text/html
+    content type. See errors/hevy-problem-types.yml.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on api.hevyapp.com, www.hevyapp.com and hevy.com.
+- id: rfc8414-authorization-server-metadata
+  conforms: false
+  evidence: >-
+    404 on all three hosts, despite hevy.com/oauth/authorize being live (307). Hevy operates an OAuth
+    authorization endpoint for its own GPT action but publishes no discovery metadata for it.
+- id: rfc9728-protected-resource-metadata
+  conforms: false
+  evidence: 404 on all three hosts.
+- id: oidc-discovery
+  conforms: false
+  evidence: /.well-known/openid-configuration returns 404 on all three hosts.
+- id: oauth2
+  conforms: partial
+  evidence: >-
+    An authorization_code endpoint exists at https://hevy.com/oauth/authorize (307 to login when
+    anonymous) and Hevy's own GPT action authenticates with OAuth. But no token endpoint, no client
+    registration, no scopes and no metadata are published, so no third-party client can complete the
+    flow. See authentication/hevy-authentication.yml.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Deprecation or Sunset headers, no deprecation policy, no operation marked deprecated.
+- id: ietf-ratelimit-headers
+  conforms: false
+  evidence: >-
+    No RateLimit-* or X-RateLimit-* headers observed on live responses, none documented, and no 429
+    declared on any operation. See rate-limits/hevy-rate-limits.yml.
+- id: idempotency-key
+  conforms: false
+  evidence: Zero matches for "idempoten" in the full spec text; no client-supplied key, no dedupe
+    window, no ETag/If-Match. See conventions/hevy-conventions.yml.
+- id: http-conditional-requests
+  conforms: false
+  evidence: >-
+    No ETag/If-None-Match/If-Match on any operation. (Heroku emits a weak ETag on the 401 body, which
+    is transport-level and not a resource concurrency control.)
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No AsyncAPI document and no webhook catalogue. The event surface is a polled change feed
+    (GET /v1/workouts/events) rather than a push surface, so this is N/A rather than a failure to
+    implement a published spec.
+- id: graphql
+  conforms: false
+  evidence: POST https://api.hevyapp.com/graphql returns 404 ("Cannot POST /graphql").
+- id: grpc-protobuf
+  conforms: false
+  evidence: No .proto published in github.com/hevyapp (3 public repos, none a service definition) and
+    no gRPC surface documented.
+- id: soap-wsdl
+  conforms: false
+  evidence: >-
+    https://api.hevyapp.com/?wsdl and ?singleWsdl return HTTP 200 but serve the Express catch-all
+    HTML landing page, not a WSDL. Recorded so a future round does not read those 200s as a hit.
+- id: mcp
+  conforms: false
+  evidence: >-
+    Hevy operates no MCP server. Six community servers exist (chrisdoc/hevy-mcp on npm being the most
+    active) but none is first-party. See mcp/hevy-mcp.yml.
+- id: a2a
+  conforms: false
+  evidence: /.well-known/agent-card.json and /.well-known/agent.json both 404 on all three hosts.
+- id: llms-txt
+  conforms: false
+  evidence: /llms.txt returns 404 on api.hevyapp.com and www.hevyapp.com.
+- id: tls-1.3
+  conforms: true
+  evidence: TLSv1.3 negotiated on all three hosts (security/hevy-domain-security.yml).
+- id: hsts
+  conforms: partial
+  evidence: >-
+    hevy.com sets HSTS (max-age 63072000). api.hevyapp.com and www.hevyapp.com do NOT — the API host
+    itself, which carries the credential, is the one without it.
+- id: dnssec
+  conforms: partial
+  evidence: hevy.com is DNSSEC-signed; hevyapp.com is not.
+- id: spf-dmarc
+  conforms: partial
+  evidence: hevyapp.com publishes SPF and DMARC (policy p=none); hevy.com publishes neither.
+domain_standard:
+  applicable: false
+  searched:
+  - Consumer fitness/strength-training data has no widely adopted interchange standard that a REST
+    contract can declare. FHIR, OMH (Open mHealth) and IEEE 11073 govern clinical and device data,
+    not gym training logs; Hevy is neither a clinical system nor a device vendor.
+  - No FHIR resource names, no OMH schema URNs, no SCIM URNs, no OData $metadata, no ActivityPub
+    actor and no HL7/X12 message types appear anywhere in either contract.
+  found: none
+  note: >-
+    REWARD-ONLY dimension. Hevy's market has no domain standard to conform to, so this is not a
+    deduction and nothing is invented to fill the slot.
+certifications: []
+compliance:
+  published: false
+  trust_center: false
+  probed:
+  - url: https://www.hevyapp.com/legal/privacy-policy/
+    status: 200
+    note: >-
+      A consumer privacy policy exists. It is not a compliance attestation, and no SOC 2, ISO 27001,
+      HIPAA or GDPR certification claim appears on the site or in the footer.
+  note: NO Compliance pointer is emitted. Nothing certified is published.

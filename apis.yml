@@ -1,23 +1,173 @@
 aid: hevy
 name: Hevy
-description: 'Hevy is a company surfaced via the API Evangelist harvest backlog (source: health-device-stack)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Hevy is a gym workout tracker and planner app for iOS, Android and the web, operated by Hevy Studios,
+  S.L. and used by a community the company describes as 15+ million lifters. Members log strength-training
+  sessions, build and reuse routines, organize them into folders, browse a large exercise library, and
+  track body measurements and progress over time. Hevy also runs Hevy Coach, a separate product for
+  personal trainers who program and monitor client training. For developers, Hevy Pro subscribers can mint
+  an API key in the web app and call a public REST API at api.hevyapp.com covering workouts, a workout
+  change-feed, routines, routine folders, exercise templates, exercise history, body measurements and
+  account info. The company also publishes a first-party ChatGPT Custom GPT ("Hevy - Gym workout planner")
+  whose OAuth-authenticated action spec it keeps in its own GitHub organization.
+image: https://www.hevyapp.com/wp-content/uploads/OG-image.png
 url: https://raw.githubusercontent.com/api-evangelist/hevy/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:health-device-stack
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-27'
 modified: '2026-08-27'
 tags:
 - Company
-apis: []
+- Fitness
+- Health
+- Workout Tracking
+- Strength Training
+- Consumer Apps
+- Mobile
+- Quantified Self
+- Personal Training
+- Health Data
+tags_raw:
+- company
+- fitness
+- health
+- workout-tracking
+- strength-training
+- consumer-apps
+- mobile
+- quantified-self
+- personal-training
+- health-data
+apis:
+- name: Hevy Public API
+  description: >-
+    Public REST API for Hevy Pro accounts. 22 operations across workouts (list, create, update, count and a
+    since-based change feed of updates and deletes), routines, routine folders, exercise templates, exercise
+    history and body measurements, plus account info. Authenticated with a per-account UUID API key sent in
+    the api-key request header; page/pageSize pagination on every collection.
+  humanURL: https://api.hevyapp.com/docs
+  baseURL: https://api.hevyapp.com
+  tags:
+  - Fitness
+  - Health
+  - Workout Tracking
+  - Strength Training
+  - Health Data
+  - Quantified Self
+  tags_raw:
+  - fitness
+  - health
+  - workout-tracking
+  - strength-training
+  - health-data
+  - quantified-self
+  properties:
+  - type: OpenAPI
+    url: openapi/hevy-public-api-openapi.json
+  - type: Documentation
+    url: https://api.hevyapp.com/docs
+  - type: APIReference
+    url: https://api.hevyapp.com/docs
+  - type: Authentication
+    url: authentication/hevy-authentication.yml
+  - type: Conventions
+    url: conventions/hevy-conventions.yml
+  - type: ErrorCatalog
+    url: errors/hevy-problem-types.yml
+  - type: DataModel
+    url: data-model/hevy-data-model.yml
+  - type: Overlay
+    url: overlays/hevy-public-api-overlay.yaml
+- name: Hevy GPT Action API
+  description: >-
+    OAuth-authenticated action surface behind Hevy's first-party ChatGPT Custom GPT, "Hevy - Gym workout
+    planner". Six operations (list workouts, list/create routines, list/create routine folders, exercise
+    history) served from hevy.com/api/v1 rather than api.hevyapp.com. Hevy publishes the OpenAPI 3.1.0
+    action schema in its own GitHub organization at github.com/hevyapp/hevy-gpt.
+  humanURL: https://github.com/hevyapp/hevy-gpt
+  baseURL: https://hevy.com/api/v1
+  tags:
+  - Fitness
+  - Workout Tracking
+  - agent-native
+  - Health Data
+  tags_raw:
+  - fitness
+  - workout-tracking
+  - agent-native
+  - health-data
+  properties:
+  - type: OpenAPI
+    url: openapi/hevy-gpt-action-openapi.json
+  - type: SourceCode
+    url: https://github.com/hevyapp/hevy-gpt
+  - type: Documentation
+    url: https://chatgpt.com/g/g-68278fb711f881919f635175ace543f9-hevy-gym-workout-planner
+common:
+- type: Website
+  url: https://www.hevyapp.com
+- type: DeveloperPortal
+  url: https://api.hevyapp.com/docs
+- type: Documentation
+  url: https://api.hevyapp.com/docs
+- type: APIReference
+  url: https://api.hevyapp.com/docs
+- type: Support
+  url: https://www.hevyapp.com/contact/
+- type: HelpCenter
+  url: https://www.hevyapp.com/help/
+- type: Blog
+  url: https://www.hevyapp.com/blog/
+- type: GitHubOrganization
+  url: https://github.com/hevyapp
+- type: Pricing
+  url: https://hevy.com/pricing
+- type: SignUp
+  url: https://hevy.com/signup
+- type: Login
+  url: https://hevy.com/login
+- type: TermsOfService
+  url: https://www.hevyapp.com/legal/terms-and-conditions/
+- type: PrivacyPolicy
+  url: https://www.hevyapp.com/legal/privacy-policy/
+- type: StatusPage
+  url: https://www.hevyapp.com/status/
+- type: ChangeLog
+  url: https://www.hevyapp.com/community-updates/
+- type: ChangeLog
+  url: changelog/hevy-changelog.yml
+- type: Lifecycle
+  url: lifecycle/hevy-lifecycle.yml
+- type: Authentication
+  url: authentication/hevy-authentication.yml
+- type: Conventions
+  url: conventions/hevy-conventions.yml
+- type: ErrorCatalog
+  url: errors/hevy-problem-types.yml
+- type: DataModel
+  url: data-model/hevy-data-model.yml
+- type: Conformance
+  url: conformance/hevy-conformance.yml
+- type: DomainSecurity
+  url: security/hevy-domain-security.yml
+- type: Packages
+  url: packages/hevy-packages.yml
+- type: RateLimits
+  url: rate-limits/hevy-rate-limits.yml
+- type: Plans
+  url: plans/hevy-plans-pricing.yml
+- type: LLMsTxt
+  url: llms/hevy-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
-common:
-- type: Website
-  url: https://www.hevyapp.com
+x-enrichment:
+  date: '2026-08-27'
+  status: enriched
+  artifacts_added: 23
+  pass: local-v1

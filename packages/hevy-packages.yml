@@ -1,0 +1,125 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  Registry metadata sweeps of registry.npmjs.org, pypi.org, api.nuget.org, rubygems.org, crates.io and
+  pkg.go.dev, plus the GitHub organization github.com/hevyapp and a GitHub code search for Hevy API
+  clients — all on 2026-08-27.
+summary:
+  first_party_sdk_count: 0
+  third_party_package_count: 6
+  note: >-
+    Hevy publishes NO client library in any public package registry, in any language. Its GitHub
+    organization (github.com/hevyapp, org id 90559337, created 2021-09-12) has exactly three public
+    repos and none of them is an SDK: `hevy-gpt` (the Custom GPT configuration, 30 stars),
+    `.github` (a pull-request template) and `heroku-buildpack`. Because there is no official SDK,
+    this repo emits NO `SDKs` pointer — the ergonomics sdk_count check must read a genuine zero.
+    Every library below is community-maintained.
+github_organization:
+  found: true
+  url: https://github.com/hevyapp
+  name: Hevy
+  public_repos: 3
+  created: '2021-09-12'
+  repos:
+  - name: hevy-gpt
+    url: https://github.com/hevyapp/hevy-gpt
+    stars: 30
+    pushed: '2025-09-02'
+    contents: Configuration for the "Hevy - Gym workout planner" ChatGPT Custom GPT, including its
+      OpenAPI 3.1.0 action schema. Captured to openapi/hevy-gpt-action-openapi.json.
+  - name: .github
+    url: https://github.com/hevyapp/.github
+    stars: 0
+  - name: heroku-buildpack
+    url: https://github.com/hevyapp/heroku-buildpack
+    stars: 0
+  checked: '2026-08-27'
+packages: []
+third_party_packages:
+- language: javascript
+  registry: npm
+  name: hevy-mcp
+  url: https://www.npmjs.com/package/hevy-mcp
+  install: npx -y hevy-mcp
+  official: false
+  version: 6.1.6
+  published: '2026-08-24'
+  repository: https://github.com/chrisdoc/hevy-mcp
+  description: >-
+    The most actively maintained community MCP server for the Hevy API — workouts, routines, folders,
+    exercise templates. Local stdio; requires the user's own Hevy Pro API key.
+  source: https://registry.npmjs.org/hevy-mcp
+- language: javascript
+  registry: npm
+  name: '@iantay/hevy-mcp'
+  url: https://www.npmjs.com/package/@iantay/hevy-mcp
+  install: npx -y @iantay/hevy-mcp
+  official: false
+  version: 1.19.0
+  published: '2026-01-10'
+  repository: null
+  description: A second community MCP server over the same Hevy API surface.
+  source: https://registry.npmjs.org/@iantay/hevy-mcp
+- language: typescript
+  registry: npm
+  name: hevy-api
+  url: https://www.npmjs.com/package/hevy-api
+  install: npm install hevy-api
+  official: false
+  version: 1.0.0
+  published: '2026-02-12'
+  repository: null
+  description: TypeScript API client for the Hevy fitness tracking app.
+  source: https://registry.npmjs.org/hevy-api
+- language: javascript
+  registry: npm
+  name: hevy-client
+  url: https://www.npmjs.com/package/hevy-client
+  install: npm install hevy-client
+  official: false
+  version: 0.2.2
+  published: '2024-10-27'
+  repository: https://github.com/kuhiga/hevy-api-client
+  description: Node.js client for the Hevy API. Unmaintained — last release predates the API's
+    body-measurements and workout-events endpoints.
+  source: https://registry.npmjs.org/hevy-client
+- language: python
+  registry: pypi
+  name: hevy-cli
+  url: https://pypi.org/project/hevy-cli/
+  install: pip install hevy-cli
+  official: false
+  version: 0.4.2
+  published: '2026-08-02'
+  repository: https://github.com/marinsalinas/hevy-cli
+  description: >-
+    Community command-line client for the Hevy workout tracking API. The only CLI over this API;
+    Hevy ships none, so no first-party CLI artifact is written.
+  source: https://pypi.org/pypi/hevy-cli/json
+- language: dotnet
+  registry: nuget
+  name: HevySharp
+  url: https://www.nuget.org/packages/HevySharp
+  install: dotnet add package HevySharp
+  official: false
+  version: 1.0.6
+  published: '2026-03-07'
+  repository: https://github.com/Klivess/HevySharp
+  description: Lightweight .NET wrapper giving typed access to workouts, routines and exercise
+    templates.
+  source: https://api.nuget.org/v3/registration5-semver1/hevysharp/index.json
+registries_checked:
+- registry: npm
+  first_party_found: false
+- registry: pypi
+  first_party_found: false
+- registry: nuget
+  first_party_found: false
+- registry: rubygems
+  first_party_found: false
+- registry: crates.io
+  first_party_found: false
+- registry: maven-central
+  first_party_found: false
+- registry: pkg.go.dev
+  first_party_found: false

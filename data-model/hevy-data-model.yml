@@ -1,0 +1,285 @@
+generated: '2026-08-27'
+method: derived
+source: >-
+  Derived from components.schemas and the id-reference fields in
+  openapi/hevy-public-api-openapi.json (28 schemas, 22 operations, harvested 2026-08-27).
+summary: >-
+  A small, single-tenant training-log model. Everything hangs off the authenticated account: a
+  Workout is a dated session containing an ordered list of Exercises, each containing an ordered list
+  of Sets. A Routine is the same shape without the timestamps — a plan rather than a record — and
+  Routines live in RoutineFolders. Both Workouts and Routines reference the shared ExerciseTemplate
+  catalogue by id. BodyMeasurement is a separate series keyed by date. There is no account, team,
+  club or social object in the API even though the product has a social feed.
+tenancy:
+  scope: single account, implied by the api-key
+  note: >-
+    No account/user id is passed on any request. Every collection is implicitly scoped to the key's
+    owner, and cross-account reads surface as 404 rather than 403. GET /v1/user/info returns the
+    caller's own id, name and profile url and is the only identity endpoint.
+id_conventions:
+- entity: Workout
+  type: string
+  note: Opaque string id.
+- entity: Routine
+  type: string
+- entity: RoutineFolder
+  type: number
+  note: Numeric id, unlike every other entity. Routine.folder_id is correspondingly a number.
+- entity: ExerciseTemplate
+  type: string
+  note: >-
+    Short uppercase hex-like identifiers, stable across accounts for the built-in library — e.g.
+    79D0BB3A "Bench Press (Barbell)", C6272009 "Deadlift (Barbell)". Custom templates created by the
+    account carry is_custom true.
+- entity: BodyMeasurement
+  type: date (YYYY-MM-DD)
+  note: Natural key — there is no synthetic id, and the date IS the path parameter.
+entities:
+- name: Workout
+  description: A completed, timed training session.
+  fields:
+    - 'id'
+    - 'title'
+    - 'description'
+    - 'routine_id'
+    - 'start_time'
+    - 'end_time'
+    - 'created_at'
+    - 'updated_at'
+    - 'exercises'
+  operations:
+    - 'GET /v1/workouts'
+    - 'POST /v1/workouts'
+    - 'GET /v1/workouts/{workoutId}'
+    - 'PUT /v1/workouts/{workoutId}'
+    - 'GET /v1/workouts/count'
+    - 'GET /v1/workouts/events'
+- name: Exercise
+  description: One exercise performed inside a Workout or planned inside a Routine. Embedded, not
+    addressable on its own.
+  fields:
+    - 'index'
+    - 'title'
+    - 'notes'
+    - 'exercise_template_id'
+    - 'supersets_id'
+    - 'sets'
+  embedded_in:
+    - 'Workout'
+    - 'Routine'
+- name: Set
+  description: One set within an Exercise. Embedded.
+  fields:
+    - 'index'
+    - 'type'
+    - 'weight_kg'
+    - 'reps'
+    - 'distance_meters'
+    - 'duration_seconds'
+    - 'rpe'
+    - 'custom_metric'
+  embedded_in:
+    - 'Exercise'
+- name: Routine
+  description: A reusable workout plan.
+  fields:
+    - 'id'
+    - 'title'
+    - 'folder_id'
+    - 'created_at'
+    - 'updated_at'
+    - 'exercises'
+  operations:
+    - 'GET /v1/routines'
+    - 'POST /v1/routines'
+    - 'GET /v1/routines/{routineId}'
+    - 'PUT /v1/routines/{routineId}'
+- name: RoutineFolder
+  description: An ordered container for Routines. New folders are created at index 0.
+  fields:
+    - 'id'
+    - 'index'
+    - 'title'
+    - 'created_at'
+    - 'updated_at'
+  operations:
+    - 'GET /v1/routine_folders'
+    - 'POST /v1/routine_folders'
+    - 'GET /v1/routine_folders/{folderId}'
+- name: ExerciseTemplate
+  description: The exercise catalogue — built-in library entries plus the account's custom exercises.
+  fields:
+    - 'id'
+    - 'title'
+    - 'type'
+    - 'primary_muscle_group'
+    - 'secondary_muscle_groups'
+    - 'equipment_category'
+    - 'is_custom'
+  operations:
+    - 'GET /v1/exercise_templates'
+    - 'POST /v1/exercise_templates'
+    - 'GET /v1/exercise_templates/{exerciseTemplateId}'
+- name: ExerciseHistoryEntry
+  description: A denormalised set-level record of every time the account performed one exercise
+    template, flattened across workouts.
+  fields:
+    - 'workout_id'
+    - 'workout_title'
+    - 'workout_start_time'
+    - 'workout_end_time'
+    - 'exercise_template_id'
+    - 'weight_kg'
+    - 'reps'
+    - 'distance_meters'
+    - 'duration_seconds'
+    - 'rpe'
+    - 'custom_metric'
+    - 'set_type'
+  operations:
+    - 'GET /v1/exercise_history/{exerciseTemplateId}'
+- name: BodyMeasurement
+  description: A dated body-composition and tape-measurement entry (18 fields, all optional except
+    date).
+  fields:
+    - 'date'
+    - 'weight_kg'
+    - 'lean_mass_kg'
+    - 'fat_percent'
+    - 'neck_cm'
+    - 'shoulder_cm'
+    - 'chest_cm'
+    - 'left_bicep_cm'
+    - 'right_bicep_cm'
+    - 'left_forearm_cm'
+    - 'right_forearm_cm'
+    - 'abdomen'
+    - 'waist'
+    - 'hips'
+    - 'left_thigh'
+    - 'right_thigh'
+    - 'left_calf'
+    - 'right_calf'
+  operations:
+    - 'GET /v1/body_measurements'
+    - 'POST /v1/body_measurements'
+    - 'GET /v1/body_measurements/{date}'
+    - 'PUT /v1/body_measurements/{date}'
+  note: >-
+    Unit naming is inconsistent — weight_kg/neck_cm carry their unit in the field name, while
+    abdomen, waist, hips, left_thigh, right_thigh, left_calf and right_calf do not. Assume the same
+    centimetre basis, but the contract does not state it.
+- name: UserInfo
+  description: The authenticated account's public identity.
+  fields:
+    - 'id'
+    - 'name'
+    - 'url'
+  operations:
+    - 'GET /v1/user/info'
+- name: WorkoutEvent
+  description: A change record on the workout collection — either UpdatedWorkout (type + full
+    Workout) or DeletedWorkout (type + id + deleted_at).
+  operations:
+    - 'GET /v1/workouts/events'
+relationships:
+- from: Workout
+  to: Exercise
+  type: has_many
+  via: exercises[]
+  embedded: true
+- from: Exercise
+  to: Set
+  type: has_many
+  via: sets[]
+  embedded: true
+- from: Workout
+  to: Routine
+  type: belongs_to
+  via: routine_id
+  optional: true
+  note: Set when the session was started from a routine.
+- from: Exercise
+  to: ExerciseTemplate
+  type: belongs_to
+  via: exercise_template_id
+- from: Routine
+  to: Exercise
+  type: has_many
+  via: exercises[]
+  embedded: true
+- from: Routine
+  to: RoutineFolder
+  type: belongs_to
+  via: folder_id
+  optional: true
+- from: RoutineFolder
+  to: Routine
+  type: has_many
+  via: reverse of Routine.folder_id
+  note: Not navigable — there is no "list routines in folder" operation; the client must list all
+    routines and group by folder_id.
+- from: ExerciseHistoryEntry
+  to: Workout
+  type: belongs_to
+  via: workout_id
+- from: ExerciseHistoryEntry
+  to: ExerciseTemplate
+  type: belongs_to
+  via: exercise_template_id
+- from: Exercise
+  to: Exercise
+  type: groups_with
+  via: supersets_id
+  note: Exercises sharing a supersets_id are performed as a superset. Null when not supersetted.
+- from: UpdatedWorkout
+  to: Workout
+  type: has_one
+  via: workout
+enumerations:
+- name: MuscleGroup
+  values:
+    - 'abdominals'
+    - 'shoulders'
+    - 'biceps'
+    - 'triceps'
+    - 'forearms'
+    - 'quadriceps'
+    - 'hamstrings'
+    - 'calves'
+    - 'glutes'
+    - 'abductors'
+    - 'adductors'
+    - 'lats'
+  note: Truncated to the first 12 values as declared in the spec; used by
+    ExerciseTemplate.primary_muscle_group and secondary_muscle_groups[].
+- name: EquipmentCategory
+  values:
+    - 'none'
+    - 'barbell'
+    - 'dumbbell'
+    - 'kettlebell'
+    - 'machine'
+    - 'plate'
+    - 'resistance_band'
+    - 'suspension'
+    - 'other'
+- name: CustomExerciseType
+  values:
+    - 'weight_reps'
+    - 'reps_only'
+    - 'bodyweight_reps'
+    - 'bodyweight_assisted_reps'
+    - 'duration'
+    - 'weight_duration'
+    - 'distance_duration'
+    - 'short_distance_weight'
+  note: >-
+    The set-shape contract. It determines which Set fields are meaningful — a duration exercise uses
+    duration_seconds and ignores weight_kg/reps. The spec does not encode that dependency, so a
+    client must apply it.
+absent_from_api:
+- Social graph (followers, feed, likes, comments) — present in the product, absent from the API.
+- Hevy Coach clients, programs and assignments — a separate product with no public API.
+- Any delete operation for any entity.
+render: null

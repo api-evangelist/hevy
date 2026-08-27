@@ -1,0 +1,54 @@
+generated: '2026-08-27'
+method: searched
+source: https://www.hevyapp.com/community-updates/
+checked: '2026-08-27'
+summary: >-
+  Hevy publishes a dated product update log — "Community Updates" — written by its Head of Product.
+  It is a genuine, first-party, dated changelog, but it covers the CONSUMER APP, not the API. No API
+  changelog exists on any Hevy host, and no community update to date mentions an API endpoint. An
+  integrator watching this feed will learn nothing about a breaking change to api.hevyapp.com.
+scope: product (iOS/Android/web app)
+api_scope_covered: false
+scheme:
+  style: dated narrative posts, one per month
+  cadence: monthly, launched July 2026
+  versioned: false
+  breaking_change_labels: false
+  rss:
+    url: https://www.hevyapp.com/feed/
+    note: The site-wide WordPress feed carries blog posts; community updates are a separate custom
+      post type and are not guaranteed to appear in it.
+current_version: null
+current_version_note: >-
+  Hevy does not publish app release notes with version numbers on the web; per-build notes live in
+  the App Store and Play Store listings. The API's own info.version is a placeholder ("0.0.1").
+entries:
+- date: '2026-07-06'
+  title: 'Community Update: July, 2026'
+  url: https://www.hevyapp.com/community-updates/july-26/
+  author: Gustavo, Head of Product
+  breaking: false
+  api_relevant: false
+  highlights:
+  - First post in a newly launched update series.
+  - 'Release process stated: near-weekly improvements and bug fixes, each release to beta users for
+    about a week before general rollout.'
+  - Trainer upgrades (Pro feature) — swap an exercise for one session or all future workouts (in
+    beta), full program view, cardio in workouts, personalized rest timers.
+  - UX polish — mid-workout logging, exercise navigation, monthly achievements; navigation reworked
+    natively for speed.
+  - 'Signalled as coming: injury management, reordering workouts.'
+api_change_observation:
+  method: derived
+  note: >-
+    This repo captured the live 22-operation contract on 2026-08-27. It is the first capture, so
+    there is no prior snapshot to diff against and no change cadence can be stated yet. A later round
+    of this pipeline can diff openapi/hevy-public-api-openapi.json against its successor to produce
+    the API change record the provider does not publish.
+  operations_at_capture: 22
+  captured: '2026-08-27'
+gaps:
+- No API changelog, release notes or version history for api.hevyapp.com.
+- No breaking-change notice channel for API consumers — the contract's own description reserves the
+  right to "completely change the structure or abandon the project entirely".
+- The changelog is not machine-readable (no JSON feed, no per-entry version tag).

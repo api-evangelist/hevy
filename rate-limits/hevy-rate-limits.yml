@@ -1,0 +1,70 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://api.hevyapp.com/docs (the full published contract) + live response-header inspection of
+  https://api.hevyapp.com/v1/workouts, both 2026-08-27.
+limit_count: 0
+summary: >-
+  Hevy publishes NO rate limit. Not a number, not a window, not a header, not a 429. This is an
+  honest zero, established two ways: the 22-operation contract contains zero occurrences of "rate
+  limit", "429" or "Retry-After", and a live request to the API returned no RateLimit-* or
+  X-RateLimit-* header of any kind.
+scopes: []
+headers_observed: []
+headers_documented: []
+status_on_exhaustion: undocumented
+retry_after: null
+probed:
+- url: https://api.hevyapp.com/v1/workouts
+  status: 401
+  checked: '2026-08-27'
+  response_headers_seen:
+  - access-control-allow-headers
+  - access-control-allow-methods
+  - access-control-allow-origin
+  - content-type
+  - date
+  - etag
+  - nel
+  - report-to
+  - reporting-endpoints
+  - server
+  - via
+  - x-powered-by
+  note: >-
+    Every header is either CORS, Heroku routing, or Express boilerplate. There is no gateway in front
+    of this API emitting limit headers — server is `Heroku`, x-powered-by is `Express`.
+spec_evidence:
+  occurrences_of_rate_limit_in_spec: 0
+  occurrences_of_429_in_spec: 0
+  occurrences_of_retry_after_in_spec: 0
+  statuses_declared: ['200', '201', '400', '403', '404', '409', '500']
+adjacent_limits:
+  note: >-
+    Hevy publishes no REQUEST-rate limit, but the contract does declare three other kinds of ceiling.
+    They are recorded here so they are not mistaken for rate limits, and because they are the only
+    quantitative consumption signals the provider gives.
+  page_size_caps:
+  - surface: GET /v1/workouts, /v1/workouts/events, /v1/routines, /v1/routine_folders,
+      /v1/body_measurements
+    max_page_size: 10
+    default: 5
+    on_violation: 400 "Invalid page size"
+  - surface: GET /v1/exercise_templates
+    max_page_size: 100
+    default: 5
+  account_caps:
+  - resource: routines
+    signal: 403 "Routine limit exceeded" on POST /v1/routines
+    value_published: false
+  - resource: custom exercise templates
+    signal: 403 "Exceeds custom exercise limit" on POST /v1/exercise_templates
+    value_published: false
+  entitlement_gate:
+    requirement: Hevy Pro subscription
+    note: API access itself is the gate — keys are only issued to Pro accounts.
+agent_guidance: >-
+  With a 10-item page cap and no published limit, a full training-history read is hundreds of
+  sequential calls against an unprotected Heroku origin. Absence of a documented limit is NOT a
+  licence to hammer it: self-throttle, back off on 5xx, and prefer GET /v1/workouts/events with a
+  `since` cursor over re-walking /v1/workouts.

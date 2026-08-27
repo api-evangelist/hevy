@@ -1,0 +1,79 @@
+generated: '2026-08-27'
+method: probed
+source: live probes of /.well-known/ on every Hevy host, 2026-08-27
+summary: >-
+  Hevy serves NO /.well-known/ document of any kind. All 24 probes (8 paths x 3 hosts) returned 404
+  with a real 404 body — an Express "Cannot GET" page on the API hosts and the WordPress 404 template
+  on the marketing site. There is no SPA catch-all answering 200 here, so these are confirmed
+  absences rather than unreadable shells.
+pointer_basis: >-
+  NO WellKnown pointer and NO SecurityTxt pointer are emitted in apis.yml. Nothing was served, so
+  there is nothing to point at; this file records the absence, it does not assert a surface.
+hosts:
+- host: https://api.hevyapp.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  note: >-
+    Express/Heroku origin; every miss returns the framework's own "Cannot GET /<path>" 404 body.
+- host: https://www.hevyapp.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  note: WordPress marketing site; 404s serve the themed 404 template with a real 404 status.
+- host: https://hevy.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  note: >-
+    Next.js web app. Notable because hevy.com/oauth/authorize IS live (307) — Hevy operates an OAuth
+    authorization endpoint for its own ChatGPT action but publishes neither RFC 8414
+    authorization-server metadata nor RFC 9728 protected-resource metadata for it, so no third-party
+    client can discover or self-register against it.
+a2a_agent_card:
+  found: false
+  note: >-
+    Both the current (/.well-known/agent-card.json) and legacy (/.well-known/agent.json) paths 404 on
+    all three hosts. Per contract, NO a2a/ artifact is written and no AgentCard pointer is emitted.
