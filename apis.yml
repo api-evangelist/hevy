@@ -10,6 +10,18 @@ description: >-
   change-feed, routines, routine folders, exercise templates, exercise history, body measurements and
   account info. The company also publishes a first-party ChatGPT Custom GPT ("Hevy - Gym workout planner")
   whose OAuth-authenticated action spec it keeps in its own GitHub organization.
+deliveryModel:
+  model: unknown
+  open_source: unknown
+  commercial: true
+  callable_host: false
+  label: Delivery model not determined — needs a product licence on record
+  confidence: low
+  source:
+  - pricing
+  - repository-unlicensed
+  generated: '2026-08-28'
+  method: derived
 image: https://www.hevyapp.com/wp-content/uploads/OG-image.png
 url: https://raw.githubusercontent.com/api-evangelist/hevy/refs/heads/main/apis.yml
 x-type: company
