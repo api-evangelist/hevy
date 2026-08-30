@@ -30,16 +30,16 @@ specificationVersion: '0.20'
 created: '2026-08-27'
 modified: '2026-08-27'
 tags:
-- Company
-- Fitness
+- company
+- fitness
 - Health
-- Workout Tracking
-- Strength Training
-- Consumer Apps
+- workout-tracking
+- strength-training
+- consumer-apps
 - Mobile
-- Quantified Self
-- Personal Training
-- Health Data
+- quantified-self
+- personal-training
+- health-data
 tags_raw:
 - company
 - fitness
@@ -188,6 +188,8 @@ apis:
   humanURL: https://api.hevyapp.com/docs
   baseURL: https://api.hevyapp.com
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
