@@ -1,0 +1,241 @@
+openapi: 3.2.0
+info:
+  title: Hevy API Docs Exercise Templates API
+  description: "\n      Welcome to Hevy's public API! We're just starting to roll this out and depending on your\n      feedback, we'll be adding more features and endpoints. Also, we make no guarantees that \n      we won't completely change the structure or abandon the project entirely so use it at\n      your own risk. Currently, this API is only available to Hevy Pro users. You can get your \n      key on our web app at https://hevy.com/settings?developer. If you have any questions,\n      please reach out to pavel@hevyapp.com \U0001F91D.\n      "
+  version: 0.0.1
+tags:
+- name: ExerciseTemplates
+paths:
+  /v1/exercise_templates:
+    get:
+      summary: Get a paginated list of exercise templates available on the account.
+      tags:
+      - ExerciseTemplates
+      parameters:
+      - in: header
+        name: api-key
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+          default: 1
+        description: Page number (Must be 1 or greater)
+      - in: query
+        name: pageSize
+        schema:
+          type: integer
+          default: 5
+        description: Number of items on the requested page (Max 100)
+      responses:
+        '200':
+          description: A paginated list of exercise templates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                    default: 1
+                    description: Current page number
+                  page_count:
+                    type: integer
+                    default: 5
+                    description: Total number of pages
+                  exercise_templates:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ExerciseTemplate'
+        '400':
+          description: Invalid page size
+    post:
+      summary: Create a new custom exercise template.
+      tags:
+      - ExerciseTemplates
+      parameters:
+      - in: header
+        name: api-key
+        schema:
+          type: string
+          format: uuid
+        required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomExerciseRequestBody'
+        description: The exercise template to create.
+      responses:
+        '200':
+          description: The exercise template was successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the exercise template
+                    example: 123
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: Invalid request body
+        '403':
+          description: Exceeds custom exercise limit
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: exceeds-custom-exercise-limit
+  /v1/exercise_templates/{exerciseTemplateId}:
+    get:
+      tags:
+      - ExerciseTemplates
+      summary: Get a single exercise template by id.
+      parameters:
+      - in: header
+        name: api-key
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - name: exerciseTemplateId
+        in: path
+        description: The id of the exercise template
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExerciseTemplate'
+        '404':
+          description: Exercise template not found
+components:
+  schemas:
+    ExerciseTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The exercise template ID.
+          example: b459cba5-cd6d-463c-abd6-54f8eafcadcb
+        title:
+          type: string
+          description: The exercise title.
+          example: Bench Press (Barbell)
+        type:
+          type: string
+          description: The exercise type.
+          example: weight_reps
+        primary_muscle_group:
+          type: string
+          description: The primary muscle group of the exercise.
+          example: chest
+        secondary_muscle_groups:
+          type: array
+          description: The secondary muscle groups of the exercise.
+          items:
+            type: string
+        equipment_category:
+          $ref: '#/components/schemas/EquipmentCategory'
+        is_custom:
+          type: boolean
+          description: A boolean indicating whether the exercise is a custom exercise.
+          example: false
+    CreateCustomExerciseRequestBody:
+      type: object
+      properties:
+        exercise:
+          required: true
+          type: object
+          properties:
+            title:
+              type: string
+              description: The title of the exercise template.
+              example: Bench Press
+            exercise_type:
+              $ref: '#/components/schemas/CustomExerciseType'
+            equipment_category:
+              $ref: '#/components/schemas/EquipmentCategory'
+              description: The equipment category of the exercise template.
+              example: barbell
+            muscle_group:
+              $ref: '#/components/schemas/MuscleGroup'
+              description: The muscle group of the exercise template.
+              example: chest
+            other_muscles:
+              type: array
+              items:
+                $ref: '#/components/schemas/MuscleGroup'
+              description: The other muscles of the exercise template.
+              example:
+              - biceps
+              - triceps
+    EquipmentCategory:
+      type: enum
+      enum:
+      - none
+      - barbell
+      - dumbbell
+      - kettlebell
+      - machine
+      - plate
+      - resistance_band
+      - suspension
+      - other
+      example: barbell
+    MuscleGroup:
+      type: enum
+      enum:
+      - abdominals
+      - shoulders
+      - biceps
+      - triceps
+      - forearms
+      - quadriceps
+      - hamstrings
+      - calves
+      - glutes
+      - abductors
+      - adductors
+      - lats
+      - upper_back
+      - traps
+      - lower_back
+      - chest
+      - cardio
+      - neck
+      - full_body
+      - other
+      example: chest
+    CustomExerciseType:
+      type: enum
+      enum:
+      - weight_reps
+      - reps_only
+      - bodyweight_reps
+      - bodyweight_assisted_reps
+      - duration
+      - weight_duration
+      - distance_duration
+      - short_distance_weight
+      example: weight_reps

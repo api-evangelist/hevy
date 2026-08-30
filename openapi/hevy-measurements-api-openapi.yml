@@ -1,0 +1,358 @@
+openapi: 3.2.0
+info:
+  title: Hevy API Docs Measurements API
+  description: "\n      Welcome to Hevy's public API! We're just starting to roll this out and depending on your\n      feedback, we'll be adding more features and endpoints. Also, we make no guarantees that \n      we won't completely change the structure or abandon the project entirely so use it at\n      your own risk. Currently, this API is only available to Hevy Pro users. You can get your \n      key on our web app at https://hevy.com/settings?developer. If you have any questions,\n      please reach out to pavel@hevyapp.com \U0001F91D.\n      "
+  version: 0.0.1
+tags:
+- name: Measurements
+paths:
+  /v1/body_measurements:
+    get:
+      summary: Get a paginated list of body measurements for the authenticated user
+      tags:
+      - Measurements
+      parameters:
+      - in: header
+        name: api-key
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+          default: 1
+        description: Page number (Must be 1 or greater)
+      - in: query
+        name: pageSize
+        schema:
+          type: integer
+          default: 10
+        description: Number of items per page (Max 10)
+      responses:
+        '200':
+          description: A paginated list of body measurements
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                    example: 1
+                  page_count:
+                    type: integer
+                    example: 5
+                  body_measurements:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BodyMeasurement'
+        '400':
+          description: Invalid page or pageSize
+        '404':
+          description: Page not found
+    post:
+      summary: Create a body measurement entry for a given date. Returns 409 if an entry already exists for that date.
+      tags:
+      - Measurements
+      parameters:
+      - in: header
+        name: api-key
+        schema:
+          type: string
+          format: uuid
+        required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BodyMeasurement'
+      responses:
+        '200':
+          description: The measurement was successfully created
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '409':
+          description: A measurement for this date already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /v1/body_measurements/{date}:
+    get:
+      summary: Get a single body measurement by date
+      tags:
+      - Measurements
+      parameters:
+      - in: header
+        name: api-key
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: date
+        required: true
+        schema:
+          type: string
+          format: date
+          example: '2024-01-15'
+        description: The date of the body measurement (YYYY-MM-DD)
+      responses:
+        '200':
+          description: The body measurement for the given date
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BodyMeasurement'
+        '404':
+          description: Body measurement not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    put:
+      summary: Update an existing body measurement entry for a given date. All fields are overwritten; omitted fields are set to null.
+      tags:
+      - Measurements
+      parameters:
+      - in: header
+        name: api-key
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: date
+        required: true
+        schema:
+          type: string
+          format: date
+          example: '2024-01-15'
+        description: The date of the measurement to update (YYYY-MM-DD)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutBodyMeasurement'
+      responses:
+        '200':
+          description: The measurement was successfully updated
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: No measurement found for the given date
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+components:
+  schemas:
+    PutBodyMeasurement:
+      type: object
+      properties:
+        weight_kg:
+          type:
+          - number
+          - 'null'
+          example: 80.5
+        lean_mass_kg:
+          type:
+          - number
+          - 'null'
+          example: 65
+        fat_percent:
+          type:
+          - number
+          - 'null'
+          example: 18.5
+        neck_cm:
+          type:
+          - number
+          - 'null'
+          example: 38
+        shoulder_cm:
+          type:
+          - number
+          - 'null'
+          example: 115
+        chest_cm:
+          type:
+          - number
+          - 'null'
+          example: 95
+        left_bicep_cm:
+          type:
+          - number
+          - 'null'
+          example: 35
+        right_bicep_cm:
+          type:
+          - number
+          - 'null'
+          example: 35.5
+        left_forearm_cm:
+          type:
+          - number
+          - 'null'
+          example: 28
+        right_forearm_cm:
+          type:
+          - number
+          - 'null'
+          example: 28.5
+        abdomen:
+          type:
+          - number
+          - 'null'
+          example: 85
+        waist:
+          type:
+          - number
+          - 'null'
+          example: 80
+        hips:
+          type:
+          - number
+          - 'null'
+          example: 95
+        left_thigh:
+          type:
+          - number
+          - 'null'
+          example: 55
+        right_thigh:
+          type:
+          - number
+          - 'null'
+          example: 55.5
+        left_calf:
+          type:
+          - number
+          - 'null'
+          example: 37
+        right_calf:
+          type:
+          - number
+          - 'null'
+          example: 37.5
+    BodyMeasurement:
+      type: object
+      required:
+      - date
+      properties:
+        date:
+          type: string
+          format: date
+          example: '2024-08-14'
+        weight_kg:
+          type:
+          - number
+          - 'null'
+          example: 80.5
+        lean_mass_kg:
+          type:
+          - number
+          - 'null'
+          example: 65
+        fat_percent:
+          type:
+          - number
+          - 'null'
+          example: 18.5
+        neck_cm:
+          type:
+          - number
+          - 'null'
+          example: 38
+        shoulder_cm:
+          type:
+          - number
+          - 'null'
+          example: 115
+        chest_cm:
+          type:
+          - number
+          - 'null'
+          example: 95
+        left_bicep_cm:
+          type:
+          - number
+          - 'null'
+          example: 35
+        right_bicep_cm:
+          type:
+          - number
+          - 'null'
+          example: 35.5
+        left_forearm_cm:
+          type:
+          - number
+          - 'null'
+          example: 28
+        right_forearm_cm:
+          type:
+          - number
+          - 'null'
+          example: 28.5
+        abdomen:
+          type:
+          - number
+          - 'null'
+          example: 85
+        waist:
+          type:
+          - number
+          - 'null'
+          example: 80
+        hips:
+          type:
+          - number
+          - 'null'
+          example: 95
+        left_thigh:
+          type:
+          - number
+          - 'null'
+          example: 55
+        right_thigh:
+          type:
+          - number
+          - 'null'
+          example: 55.5
+        left_calf:
+          type:
+          - number
+          - 'null'
+          example: 37
+        right_calf:
+          type:
+          - number
+          - 'null'
+          example: 37.5

@@ -1,0 +1,51 @@
+openapi: 3.2.0
+info:
+  title: Hevy API Docs Users API
+  description: "\n      Welcome to Hevy's public API! We're just starting to roll this out and depending on your\n      feedback, we'll be adding more features and endpoints. Also, we make no guarantees that \n      we won't completely change the structure or abandon the project entirely so use it at\n      your own risk. Currently, this API is only available to Hevy Pro users. You can get your \n      key on our web app at https://hevy.com/settings?developer. If you have any questions,\n      please reach out to pavel@hevyapp.com \U0001F91D.\n      "
+  version: 0.0.1
+tags:
+- name: Users
+paths:
+  /v1/user/info:
+    get:
+      summary: Get user info
+      tags:
+      - Users
+      parameters:
+      - in: header
+        name: api-key
+        schema:
+          type: string
+          format: uuid
+        required: true
+      responses:
+        '200':
+          description: The authenticated user's info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
+        '404':
+          description: User not found
+components:
+  schemas:
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The user ID.
+          example: 9c465af3-de7d-42bc-9c7c-f0170396358b
+        name:
+          type: string
+          description: The user's display name.
+          example: John doe
+        url:
+          type: string
+          description: The user's public profile URL.
+          example: https://hevy.com/user/jhon
+    UserInfoResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/UserInfo'
