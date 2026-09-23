@@ -142,6 +142,8 @@ paths:
                       $ref: '#/components/schemas/Routine_2'
         '400':
           description: Invalid page size
+      operationId: getV1Routines
+      x-operation-id-source: derived
     post:
       summary: Create a new routine
       tags:
@@ -186,6 +188,8 @@ paths:
                   error:
                     type: string
                     description: Error message
+      operationId: postV1Routines
+      x-operation-id-source: derived
   /v1/routines/{routineId}:
     get:
       summary: Get a routine by its Id
@@ -222,6 +226,8 @@ paths:
                   error:
                     type: string
                     description: Error message
+      operationId: getV1RoutinesByRoutineId
+      x-operation-id-source: derived
     put:
       summary: Update an existing routine
       tags:
@@ -270,6 +276,8 @@ paths:
                   error:
                     type: string
                     description: Error message
+      operationId: putV1RoutinesByRoutineId
+      x-operation-id-source: derived
 components:
   schemas:
     PostRoutinesRequestExercise:
@@ -395,6 +403,35 @@ components:
                       nullable: true
                       description: Custom metric logged for the set (Currently only used to log floors or steps for stair machine exercises)
                       example: 50
+    PostRoutinesRequestBody:
+      type: object
+      properties:
+        routine:
+          type: object
+          properties:
+            title:
+              type: string
+              description: The title of the routine.
+              example: April Leg Day 🔥
+            folder_id:
+              enum:
+              - null
+              description: The folder id the routine should be added to. Only null is accepted to insert the routine into default "My Routines" folder
+              example: null
+            notes:
+              type: string
+              description: Additional notes for the routine.
+              example: Focus on form over weight. Remember to stretch.
+            source:
+              type: string
+              description: The source of the routine.
+              enum:
+              - chatgpt
+              example: chatgpt
+            exercises:
+              type: array
+              items:
+                $ref: '#/components/schemas/PostRoutinesRequestExercise'
     PostRoutinesRequestSet:
       type: object
       properties:
@@ -432,7 +469,7 @@ components:
           nullable: true
           description: A custom metric for the set. Currently used for steps and floors.
           example: null
-    PostRoutinesRequestBody:
+    PutRoutinesRequestBody:
       type: object
       properties:
         routine:
@@ -443,24 +480,21 @@ components:
               description: The title of the routine.
               example: April Leg Day 🔥
             folder_id:
-              enum:
-              - null
-              description: The folder id the routine should be added to. Only null is accepted to insert the routine into default "My Routines" folder
+              type:
+              - number
+              - 'null'
+              description: The folder id the routine should be added to. Pass null to insert the routine into default "My Routines" folder
               example: null
             notes:
-              type: string
+              type:
+              - string
+              - 'null'
               description: Additional notes for the routine.
               example: Focus on form over weight. Remember to stretch.
-            source:
-              type: string
-              description: The source of the routine.
-              enum:
-              - chatgpt
-              example: chatgpt
             exercises:
               type: array
               items:
-                $ref: '#/components/schemas/PostRoutinesRequestExercise'
+                $ref: '#/components/schemas/PutRoutinesRequestExercise'
     PutRoutinesRequestExercise:
       type: object
       properties:
@@ -642,62 +676,6 @@ components:
                       - 'null'
                       description: Custom metric logged for the set (Currently only used to log floors or steps for stair machine exercises)
                       example: 50
-    PostRoutinesRequestSet_2:
-      type: object
-      properties:
-        type:
-          type: string
-          description: The type of the set.
-          enum:
-          - warmup
-          - normal
-          - failure
-          - dropset
-          example: normal
-        weight_kg:
-          type:
-          - number
-          - 'null'
-          description: The weight in kilograms.
-          example: 100
-        reps:
-          type:
-          - integer
-          - 'null'
-          description: The number of repetitions.
-          example: 10
-        distance_meters:
-          type:
-          - integer
-          - 'null'
-          description: The distance in meters.
-          example: null
-        duration_seconds:
-          type:
-          - integer
-          - 'null'
-          description: The duration in seconds.
-          example: null
-        custom_metric:
-          type:
-          - number
-          - 'null'
-          description: A custom metric for the set. Currently used for steps and floors.
-          example: null
-        rep_range:
-          type:
-          - object
-          - 'null'
-          description: Range of reps for the set, if applicable
-          properties:
-            start:
-              type: number
-              description: Starting rep count for the range
-              example: 8
-            end:
-              type: number
-              description: Ending rep count for the range
-              example: 12
     PutRoutinesRequestSet:
       type: object
       properties:
@@ -758,6 +736,62 @@ components:
               - 'null'
               description: Ending rep count for the range
               example: 12
+    PostRoutinesRequestSet_2:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of the set.
+          enum:
+          - warmup
+          - normal
+          - failure
+          - dropset
+          example: normal
+        weight_kg:
+          type:
+          - number
+          - 'null'
+          description: The weight in kilograms.
+          example: 100
+        reps:
+          type:
+          - integer
+          - 'null'
+          description: The number of repetitions.
+          example: 10
+        distance_meters:
+          type:
+          - integer
+          - 'null'
+          description: The distance in meters.
+          example: null
+        duration_seconds:
+          type:
+          - integer
+          - 'null'
+          description: The duration in seconds.
+          example: null
+        custom_metric:
+          type:
+          - number
+          - 'null'
+          description: A custom metric for the set. Currently used for steps and floors.
+          example: null
+        rep_range:
+          type:
+          - object
+          - 'null'
+          description: Range of reps for the set, if applicable
+          properties:
+            start:
+              type: number
+              description: Starting rep count for the range
+              example: 8
+            end:
+              type: number
+              description: Ending rep count for the range
+              example: 12
     PostRoutinesRequestBody_2:
       type: object
       properties:
@@ -782,32 +816,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/PostRoutinesRequestExercise_2'
-    PutRoutinesRequestBody:
-      type: object
-      properties:
-        routine:
-          type: object
-          properties:
-            title:
-              type: string
-              description: The title of the routine.
-              example: April Leg Day 🔥
-            folder_id:
-              type:
-              - number
-              - 'null'
-              description: The folder id the routine should be added to. Pass null to insert the routine into default "My Routines" folder
-              example: null
-            notes:
-              type:
-              - string
-              - 'null'
-              description: Additional notes for the routine.
-              example: Focus on form over weight. Remember to stretch.
-            exercises:
-              type: array
-              items:
-                $ref: '#/components/schemas/PutRoutinesRequestExercise'
 x-refined-from:
 - hevy-gpt-action-openapi.json
 - hevy-public-api-openapi.json

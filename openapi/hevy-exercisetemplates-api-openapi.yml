@@ -1,14 +1,24 @@
 openapi: 3.2.0
 info:
   title: Hevy API Docs Exercise Templates API
-  description: "\n      Welcome to Hevy's public API! We're just starting to roll this out and depending on your\n      feedback, we'll be adding more features and endpoints. Also, we make no guarantees that \n      we won't completely change the structure or abandon the project entirely so use it at\n      your own risk. Currently, this API is only available to Hevy Pro users. You can get your \n      key on our web app at https://hevy.com/settings?developer. If you have any questions,\n      please reach out to pavel@hevyapp.com \U0001F91D.\n      "
+  description: 'Welcome to Hevy''s public API! We''re just starting to roll this out and depending on your
+
+    feedback, we''ll be adding more features and endpoints. Also, we make no guarantees that
+
+    we won''t completely change the structure or abandon the project entirely so use it at
+
+    your own risk. Currently, this API is only available to Hevy Pro users. You can get your
+
+    key on our web app at https://hevy.com/settings?developer. If you have any questions,
+
+    please reach out to pavel@hevyapp.com 🤝.'
   version: 0.0.1
 tags:
 - name: ExerciseTemplates
 paths:
   /v1/exercise_templates:
     get:
-      summary: Get a paginated list of exercise templates available on the account.
+      summary: Get a paginated list of exercise templates available on the account
       tags:
       - ExerciseTemplates
       parameters:
@@ -52,8 +62,10 @@ paths:
                       $ref: '#/components/schemas/ExerciseTemplate'
         '400':
           description: Invalid page size
+      operationId: getV1ExerciseTemplates
+      x-operation-id-source: derived
     post:
-      summary: Create a new custom exercise template.
+      summary: Create a new custom exercise template
       tags:
       - ExerciseTemplates
       parameters:
@@ -104,11 +116,13 @@ paths:
                     type: string
                     description: Error message
                     example: exceeds-custom-exercise-limit
+      operationId: postV1ExerciseTemplates
+      x-operation-id-source: derived
   /v1/exercise_templates/{exerciseTemplateId}:
     get:
       tags:
       - ExerciseTemplates
-      summary: Get a single exercise template by id.
+      summary: Get a single exercise template by id
       parameters:
       - in: header
         name: api-key
@@ -129,38 +143,10 @@ paths:
                 $ref: '#/components/schemas/ExerciseTemplate'
         '404':
           description: Exercise template not found
+      operationId: getV1ExerciseTemplatesByExerciseTemplateId
+      x-operation-id-source: derived
 components:
   schemas:
-    ExerciseTemplate:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The exercise template ID.
-          example: b459cba5-cd6d-463c-abd6-54f8eafcadcb
-        title:
-          type: string
-          description: The exercise title.
-          example: Bench Press (Barbell)
-        type:
-          type: string
-          description: The exercise type.
-          example: weight_reps
-        primary_muscle_group:
-          type: string
-          description: The primary muscle group of the exercise.
-          example: chest
-        secondary_muscle_groups:
-          type: array
-          description: The secondary muscle groups of the exercise.
-          items:
-            type: string
-        equipment_category:
-          $ref: '#/components/schemas/EquipmentCategory'
-        is_custom:
-          type: boolean
-          description: A boolean indicating whether the exercise is a custom exercise.
-          example: false
     CreateCustomExerciseRequestBody:
       type: object
       properties:
@@ -190,19 +176,6 @@ components:
               example:
               - biceps
               - triceps
-    EquipmentCategory:
-      type: enum
-      enum:
-      - none
-      - barbell
-      - dumbbell
-      - kettlebell
-      - machine
-      - plate
-      - resistance_band
-      - suspension
-      - other
-      example: barbell
     MuscleGroup:
       type: enum
       enum:
@@ -239,3 +212,46 @@ components:
       - distance_duration
       - short_distance_weight
       example: weight_reps
+    ExerciseTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The exercise template ID.
+          example: b459cba5-cd6d-463c-abd6-54f8eafcadcb
+        title:
+          type: string
+          description: The exercise title.
+          example: Bench Press (Barbell)
+        type:
+          type: string
+          description: The exercise type.
+          example: weight_reps
+        primary_muscle_group:
+          type: string
+          description: The primary muscle group of the exercise.
+          example: chest
+        secondary_muscle_groups:
+          type: array
+          description: The secondary muscle groups of the exercise.
+          items:
+            type: string
+        equipment_category:
+          $ref: '#/components/schemas/EquipmentCategory'
+        is_custom:
+          type: boolean
+          description: A boolean indicating whether the exercise is a custom exercise.
+          example: false
+    EquipmentCategory:
+      type: enum
+      enum:
+      - none
+      - barbell
+      - dumbbell
+      - kettlebell
+      - machine
+      - plate
+      - resistance_band
+      - suspension
+      - other
+      example: barbell

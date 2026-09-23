@@ -100,6 +100,8 @@ paths:
                       $ref: '#/components/schemas/Workout_2'
         '400':
           description: Invalid page size
+      operationId: getV1Workouts
+      x-operation-id-source: derived
     post:
       summary: Create a new workout
       tags:
@@ -134,6 +136,8 @@ paths:
                   error:
                     type: string
                     description: Error message
+      operationId: postV1Workouts
+      x-operation-id-source: derived
   /v1/workouts/count:
     get:
       summary: Get the total number of workouts on the account
@@ -158,9 +162,11 @@ paths:
                     type: integer
                     default: 42
                     description: The total number of workouts
+      operationId: getV1WorkoutsCount
+      x-operation-id-source: derived
   /v1/workouts/events:
     get:
-      summary: Retrieve a paged list of workout events (updates or deletes) since a given date. Events are ordered from newest to oldest. The intention is to allow clients to keep their local cache of workouts up to date without having to fetch the entire list of workouts.
+      summary: Retrieve a paged list of workout events (updates or deletes) since a given date.
       tags:
       - Workouts
       parameters:
@@ -197,6 +203,8 @@ paths:
                 $ref: '#/components/schemas/PaginatedWorkoutEvents'
         '500':
           description: Internal Server Error
+      operationId: getV1WorkoutsEvents
+      x-operation-id-source: derived
   /v1/workouts/{workoutId}:
     get:
       tags:
@@ -222,6 +230,8 @@ paths:
                 $ref: '#/components/schemas/Workout_2'
         '404':
           description: Workout not found
+      operationId: getV1WorkoutsByWorkoutId
+      x-operation-id-source: derived
     put:
       summary: Update an existing workout
       tags:
@@ -260,6 +270,8 @@ paths:
                   error:
                     type: string
                     description: Error message
+      operationId: putV1WorkoutsByWorkoutId
+      x-operation-id-source: derived
 components:
   schemas:
     Workout:
@@ -362,6 +374,63 @@ components:
                       nullable: true
                       description: Custom metric logged for the set (Currently only used to log floors or steps for stair machine exercises)
                       example: 50
+    PostWorkoutsRequestSet:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of the set.
+          enum:
+          - warmup
+          - normal
+          - failure
+          - dropset
+          example: normal
+        weight_kg:
+          type:
+          - number
+          - 'null'
+          description: The weight in kilograms.
+          example: 100
+        reps:
+          type:
+          - integer
+          - 'null'
+          description: The number of repetitions.
+          example: 10
+        distance_meters:
+          type:
+          - integer
+          - 'null'
+          description: The distance in meters.
+          example: null
+        duration_seconds:
+          type:
+          - integer
+          - 'null'
+          description: The duration in seconds.
+          example: null
+        custom_metric:
+          type:
+          - number
+          - 'null'
+          description: A custom metric for the set. Currently used for steps and floors.
+          example: null
+        rpe:
+          type:
+          - number
+          - 'null'
+          description: The Rating of Perceived Exertion (RPE).
+          enum:
+          - 6
+          - 7
+          - 7.5
+          - 8
+          - 8.5
+          - 9
+          - 9.5
+          - 10
+          example: null
     Workout_2:
       type: object
       properties:
@@ -491,63 +560,63 @@ components:
           type: string
           description: A date string indicating when the workout was deleted
           example: '2021-09-13T12:00:00Z'
-    PostWorkoutsRequestSet:
+    UpdatedWorkout:
       type: object
+      required:
+      - type
+      - workout
       properties:
         type:
           type: string
-          description: The type of the set.
-          enum:
-          - warmup
-          - normal
-          - failure
-          - dropset
-          example: normal
-        weight_kg:
-          type:
-          - number
-          - 'null'
-          description: The weight in kilograms.
-          example: 100
-        reps:
+          description: Indicates the type of the event (updated)
+          example: updated
+        workout:
+          $ref: '#/components/schemas/Workout_2'
+    PostWorkoutsRequestExercise:
+      type: object
+      properties:
+        exercise_template_id:
+          type: string
+          description: The ID of the exercise template.
+          example: D04AC939
+        superset_id:
           type:
           - integer
           - 'null'
-          description: The number of repetitions.
-          example: 10
-        distance_meters:
-          type:
-          - integer
-          - 'null'
-          description: The distance in meters.
+          description: The ID of the superset.
           example: null
-        duration_seconds:
+        notes:
           type:
-          - integer
+          - string
           - 'null'
-          description: The duration in seconds.
-          example: null
-        custom_metric:
-          type:
-          - number
-          - 'null'
-          description: A custom metric for the set. Currently used for steps and floors.
-          example: null
-        rpe:
-          type:
-          - number
-          - 'null'
-          description: The Rating of Perceived Exertion (RPE).
-          enum:
-          - 6
-          - 7
-          - 7.5
-          - 8
-          - 8.5
-          - 9
-          - 9.5
-          - 10
-          example: null
+          description: Additional notes for the exercise.
+          example: Felt good today. Form was on point.
+        sets:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostWorkoutsRequestSet'
+    PaginatedWorkoutEvents:
+      type: object
+      required:
+      - page
+      - page_count
+      - events
+      properties:
+        page:
+          type: integer
+          description: The current page number
+          example: 1
+        page_count:
+          type: integer
+          description: The total number of pages available
+          example: 5
+        events:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/UpdatedWorkout'
+            - $ref: '#/components/schemas/DeletedWorkout'
+          description: An array of workout events (either updated or deleted)
     PostWorkoutsRequestBody:
       type: object
       properties:
@@ -580,63 +649,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/PostWorkoutsRequestExercise'
-    PaginatedWorkoutEvents:
-      type: object
-      required:
-      - page
-      - page_count
-      - events
-      properties:
-        page:
-          type: integer
-          description: The current page number
-          example: 1
-        page_count:
-          type: integer
-          description: The total number of pages available
-          example: 5
-        events:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/UpdatedWorkout'
-            - $ref: '#/components/schemas/DeletedWorkout'
-          description: An array of workout events (either updated or deleted)
-    PostWorkoutsRequestExercise:
-      type: object
-      properties:
-        exercise_template_id:
-          type: string
-          description: The ID of the exercise template.
-          example: D04AC939
-        superset_id:
-          type:
-          - integer
-          - 'null'
-          description: The ID of the superset.
-          example: null
-        notes:
-          type:
-          - string
-          - 'null'
-          description: Additional notes for the exercise.
-          example: Felt good today. Form was on point.
-        sets:
-          type: array
-          items:
-            $ref: '#/components/schemas/PostWorkoutsRequestSet'
-    UpdatedWorkout:
-      type: object
-      required:
-      - type
-      - workout
-      properties:
-        type:
-          type: string
-          description: Indicates the type of the event (updated)
-          example: updated
-        workout:
-          $ref: '#/components/schemas/Workout_2'
 x-refined-from:
 - hevy-gpt-action-openapi.json
 - hevy-public-api-openapi.json

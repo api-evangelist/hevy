@@ -1,0 +1,49 @@
+{
+  "provider": "hevy",
+  "sources": [
+    "_original/hevy-gpt-action-openapi.json",
+    "_original/hevy-public-api-openapi.json"
+  ],
+  "outputs": [
+    "hevy-exercisehistory-api-openapi.yml",
+    "hevy-routinefolders-api-openapi.yml",
+    "hevy-routines-api-openapi.yml",
+    "hevy-workouts-api-openapi.yml",
+    "hevy-exercisetemplates-api-openapi.yml",
+    "hevy-measurements-api-openapi.yml",
+    "hevy-users-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (2 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "hevy-gpt-action-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "hevy-gpt-action-openapi.json: declared missing tag: ExerciseHistory",
+    "hevy-gpt-action-openapi.json: declared missing tag: RoutineFolders",
+    "hevy-gpt-action-openapi.json: declared missing tag: Routines",
+    "hevy-gpt-action-openapi.json: declared missing tag: Workouts",
+    "hevy-public-api-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "hevy-public-api-openapi.json: declared missing tag: ExerciseHistory",
+    "hevy-public-api-openapi.json: declared missing tag: ExerciseTemplates",
+    "hevy-public-api-openapi.json: declared missing tag: Measurements",
+    "hevy-public-api-openapi.json: declared missing tag: RoutineFolders",
+    "hevy-public-api-openapi.json: declared missing tag: Routines",
+    "hevy-public-api-openapi.json: declared missing tag: Users",
+    "hevy-public-api-openapi.json: declared missing tag: Workouts",
+    "tag 'ExerciseHistory' spans 2 source specs (hevy-gpt-action-openapi.json, hevy-public-api-openapi.json): per-path servers applied",
+    "tag 'RoutineFolders' spans 2 source specs (hevy-gpt-action-openapi.json, hevy-public-api-openapi.json): per-path servers applied",
+    "tag 'Routines' spans 2 source specs (hevy-gpt-action-openapi.json, hevy-public-api-openapi.json): per-path servers applied",
+    "tag 'Workouts' spans 2 source specs (hevy-gpt-action-openapi.json, hevy-public-api-openapi.json): per-path servers applied",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "hevy-exercisehistory-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hevy-exercisetemplates-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hevy-measurements-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hevy-routinefolders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hevy-routines-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hevy-users-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hevy-workouts-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

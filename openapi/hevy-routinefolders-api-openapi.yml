@@ -10,7 +10,7 @@ tags:
 paths:
   /api/v1/routine_folders:
     get:
-      summary: Get a paginated list of routine folders available on the account.
+      summary: Get a paginated list of routine folders available on the account
       tags:
       - RoutineFolders
       operationId: get-routine-folders
@@ -53,7 +53,7 @@ paths:
         '400':
           description: Invalid page size
     post:
-      summary: Create a new routine folder. The folder will be created at index 0, and all other folders will have their indexes incremented.
+      summary: Create a new routine folder.
       tags:
       - RoutineFolders
       operationId: post-routine-folder
@@ -88,7 +88,7 @@ paths:
     - url: https://hevy.com
   /v1/routine_folders:
     get:
-      summary: Get a paginated list of routine folders available on the account.
+      summary: Get a paginated list of routine folders available on the account
       tags:
       - RoutineFolders
       parameters:
@@ -132,8 +132,10 @@ paths:
                       $ref: '#/components/schemas/RoutineFolder'
         '400':
           description: Invalid page size
+      operationId: getV1RoutineFolders
+      x-operation-id-source: derived
     post:
-      summary: Create a new routine folder. The folder will be created at index 0, and all other folders will have their indexes incremented.
+      summary: Create a new routine folder.
       tags:
       - RoutineFolders
       parameters:
@@ -166,11 +168,13 @@ paths:
                   error:
                     type: string
                     description: Error message
+      operationId: postV1RoutineFolders
+      x-operation-id-source: derived
   /v1/routine_folders/{folderId}:
     get:
       tags:
       - RoutineFolders
-      summary: Get a single routine folder by id.
+      summary: Get a single routine folder by id
       parameters:
       - in: header
         name: api-key
@@ -191,6 +195,8 @@ paths:
                 $ref: '#/components/schemas/RoutineFolder'
         '404':
           description: Routine folder not found
+      operationId: getV1RoutineFoldersByFolderId
+      x-operation-id-source: derived
 components:
   schemas:
     RoutineFolder:

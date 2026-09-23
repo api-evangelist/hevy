@@ -1,7 +1,17 @@
 openapi: 3.2.0
 info:
   title: Hevy API Docs Users API
-  description: "\n      Welcome to Hevy's public API! We're just starting to roll this out and depending on your\n      feedback, we'll be adding more features and endpoints. Also, we make no guarantees that \n      we won't completely change the structure or abandon the project entirely so use it at\n      your own risk. Currently, this API is only available to Hevy Pro users. You can get your \n      key on our web app at https://hevy.com/settings?developer. If you have any questions,\n      please reach out to pavel@hevyapp.com \U0001F91D.\n      "
+  description: 'Welcome to Hevy''s public API! We''re just starting to roll this out and depending on your
+
+    feedback, we''ll be adding more features and endpoints. Also, we make no guarantees that
+
+    we won''t completely change the structure or abandon the project entirely so use it at
+
+    your own risk. Currently, this API is only available to Hevy Pro users. You can get your
+
+    key on our web app at https://hevy.com/settings?developer. If you have any questions,
+
+    please reach out to pavel@hevyapp.com 🤝.'
   version: 0.0.1
 tags:
 - name: Users
@@ -27,6 +37,8 @@ paths:
                 $ref: '#/components/schemas/UserInfoResponse'
         '404':
           description: User not found
+      operationId: getV1UserInfo
+      x-operation-id-source: derived
 components:
   schemas:
     UserInfo:
