@@ -147,6 +147,55 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    CustomExerciseType:
+      type: enum
+      enum:
+      - weight_reps
+      - reps_only
+      - bodyweight_reps
+      - bodyweight_assisted_reps
+      - duration
+      - weight_duration
+      - distance_duration
+      - short_distance_weight
+      example: weight_reps
+    EquipmentCategory:
+      type: enum
+      enum:
+      - none
+      - barbell
+      - dumbbell
+      - kettlebell
+      - machine
+      - plate
+      - resistance_band
+      - suspension
+      - other
+      example: barbell
+    MuscleGroup:
+      type: enum
+      enum:
+      - abdominals
+      - shoulders
+      - biceps
+      - triceps
+      - forearms
+      - quadriceps
+      - hamstrings
+      - calves
+      - glutes
+      - abductors
+      - adductors
+      - lats
+      - upper_back
+      - traps
+      - lower_back
+      - chest
+      - cardio
+      - neck
+      - full_body
+      - other
+      example: chest
     CreateCustomExerciseRequestBody:
       type: object
       properties:
@@ -176,42 +225,6 @@ components:
               example:
               - biceps
               - triceps
-    MuscleGroup:
-      type: enum
-      enum:
-      - abdominals
-      - shoulders
-      - biceps
-      - triceps
-      - forearms
-      - quadriceps
-      - hamstrings
-      - calves
-      - glutes
-      - abductors
-      - adductors
-      - lats
-      - upper_back
-      - traps
-      - lower_back
-      - chest
-      - cardio
-      - neck
-      - full_body
-      - other
-      example: chest
-    CustomExerciseType:
-      type: enum
-      enum:
-      - weight_reps
-      - reps_only
-      - bodyweight_reps
-      - bodyweight_assisted_reps
-      - duration
-      - weight_duration
-      - distance_duration
-      - short_distance_weight
-      example: weight_reps
     ExerciseTemplate:
       type: object
       properties:
@@ -242,16 +255,3 @@ components:
           type: boolean
           description: A boolean indicating whether the exercise is a custom exercise.
           example: false
-    EquipmentCategory:
-      type: enum
-      enum:
-      - none
-      - barbell
-      - dumbbell
-      - kettlebell
-      - machine
-      - plate
-      - resistance_band
-      - suspension
-      - other
-      example: barbell

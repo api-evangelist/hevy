@@ -41,6 +41,11 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    UserInfoResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/UserInfo'
     UserInfo:
       type: object
       properties:
@@ -56,8 +61,3 @@ components:
           type: string
           description: The user's public profile URL.
           example: https://hevy.com/user/jhon
-    UserInfoResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/UserInfo'

@@ -403,35 +403,6 @@ components:
                       nullable: true
                       description: Custom metric logged for the set (Currently only used to log floors or steps for stair machine exercises)
                       example: 50
-    PostRoutinesRequestBody:
-      type: object
-      properties:
-        routine:
-          type: object
-          properties:
-            title:
-              type: string
-              description: The title of the routine.
-              example: April Leg Day 🔥
-            folder_id:
-              enum:
-              - null
-              description: The folder id the routine should be added to. Only null is accepted to insert the routine into default "My Routines" folder
-              example: null
-            notes:
-              type: string
-              description: Additional notes for the routine.
-              example: Focus on form over weight. Remember to stretch.
-            source:
-              type: string
-              description: The source of the routine.
-              enum:
-              - chatgpt
-              example: chatgpt
-            exercises:
-              type: array
-              items:
-                $ref: '#/components/schemas/PostRoutinesRequestExercise'
     PostRoutinesRequestSet:
       type: object
       properties:
@@ -469,7 +440,7 @@ components:
           nullable: true
           description: A custom metric for the set. Currently used for steps and floors.
           example: null
-    PutRoutinesRequestBody:
+    PostRoutinesRequestBody:
       type: object
       properties:
         routine:
@@ -480,21 +451,24 @@ components:
               description: The title of the routine.
               example: April Leg Day 🔥
             folder_id:
-              type:
-              - number
-              - 'null'
-              description: The folder id the routine should be added to. Pass null to insert the routine into default "My Routines" folder
+              enum:
+              - null
+              description: The folder id the routine should be added to. Only null is accepted to insert the routine into default "My Routines" folder
               example: null
             notes:
-              type:
-              - string
-              - 'null'
+              type: string
               description: Additional notes for the routine.
               example: Focus on form over weight. Remember to stretch.
+            source:
+              type: string
+              description: The source of the routine.
+              enum:
+              - chatgpt
+              example: chatgpt
             exercises:
               type: array
               items:
-                $ref: '#/components/schemas/PutRoutinesRequestExercise'
+                $ref: '#/components/schemas/PostRoutinesRequestExercise'
     PutRoutinesRequestExercise:
       type: object
       properties:
@@ -524,6 +498,30 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PutRoutinesRequestSet'
+    PostRoutinesRequestBody_2:
+      type: object
+      properties:
+        routine:
+          type: object
+          properties:
+            title:
+              type: string
+              description: The title of the routine.
+              example: April Leg Day 🔥
+            folder_id:
+              type:
+              - number
+              - 'null'
+              description: The folder id the routine should be added to. Pass null to insert the routine into default "My Routines" folder
+              example: null
+            notes:
+              type: string
+              description: Additional notes for the routine.
+              example: Focus on form over weight. Remember to stretch.
+            exercises:
+              type: array
+              items:
+                $ref: '#/components/schemas/PostRoutinesRequestExercise_2'
     PostRoutinesRequestExercise_2:
       type: object
       properties:
@@ -553,6 +551,32 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PostRoutinesRequestSet_2'
+    PutRoutinesRequestBody:
+      type: object
+      properties:
+        routine:
+          type: object
+          properties:
+            title:
+              type: string
+              description: The title of the routine.
+              example: April Leg Day 🔥
+            folder_id:
+              type:
+              - number
+              - 'null'
+              description: The folder id the routine should be added to. Pass null to insert the routine into default "My Routines" folder
+              example: null
+            notes:
+              type:
+              - string
+              - 'null'
+              description: Additional notes for the routine.
+              example: Focus on form over weight. Remember to stretch.
+            exercises:
+              type: array
+              items:
+                $ref: '#/components/schemas/PutRoutinesRequestExercise'
     Routine_2:
       type: object
       properties:
@@ -792,30 +816,6 @@ components:
               type: number
               description: Ending rep count for the range
               example: 12
-    PostRoutinesRequestBody_2:
-      type: object
-      properties:
-        routine:
-          type: object
-          properties:
-            title:
-              type: string
-              description: The title of the routine.
-              example: April Leg Day 🔥
-            folder_id:
-              type:
-              - number
-              - 'null'
-              description: The folder id the routine should be added to. Pass null to insert the routine into default "My Routines" folder
-              example: null
-            notes:
-              type: string
-              description: Additional notes for the routine.
-              example: Focus on form over weight. Remember to stretch.
-            exercises:
-              type: array
-              items:
-                $ref: '#/components/schemas/PostRoutinesRequestExercise_2'
 x-refined-from:
 - hevy-gpt-action-openapi.json
 - hevy-public-api-openapi.json
