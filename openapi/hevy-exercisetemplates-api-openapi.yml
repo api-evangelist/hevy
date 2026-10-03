@@ -159,43 +159,6 @@ components:
       - distance_duration
       - short_distance_weight
       example: weight_reps
-    EquipmentCategory:
-      type: enum
-      enum:
-      - none
-      - barbell
-      - dumbbell
-      - kettlebell
-      - machine
-      - plate
-      - resistance_band
-      - suspension
-      - other
-      example: barbell
-    MuscleGroup:
-      type: enum
-      enum:
-      - abdominals
-      - shoulders
-      - biceps
-      - triceps
-      - forearms
-      - quadriceps
-      - hamstrings
-      - calves
-      - glutes
-      - abductors
-      - adductors
-      - lats
-      - upper_back
-      - traps
-      - lower_back
-      - chest
-      - cardio
-      - neck
-      - full_body
-      - other
-      example: chest
     CreateCustomExerciseRequestBody:
       type: object
       properties:
@@ -225,6 +188,43 @@ components:
               example:
               - biceps
               - triceps
+    MuscleGroup:
+      type: enum
+      enum:
+      - abdominals
+      - shoulders
+      - biceps
+      - triceps
+      - forearms
+      - quadriceps
+      - hamstrings
+      - calves
+      - glutes
+      - abductors
+      - adductors
+      - lats
+      - upper_back
+      - traps
+      - lower_back
+      - chest
+      - cardio
+      - neck
+      - full_body
+      - other
+      example: chest
+    EquipmentCategory:
+      type: enum
+      enum:
+      - none
+      - barbell
+      - dumbbell
+      - kettlebell
+      - machine
+      - plate
+      - resistance_band
+      - suspension
+      - other
+      example: barbell
     ExerciseTemplate:
       type: object
       properties:

@@ -192,15 +192,9 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    BodyMeasurement:
+    PutBodyMeasurement:
       type: object
-      required:
-      - date
       properties:
-        date:
-          type: string
-          format: date
-          example: '2024-08-14'
         weight_kg:
           type:
           - number
@@ -286,9 +280,15 @@ components:
           - number
           - 'null'
           example: 37.5
-    PutBodyMeasurement:
+    BodyMeasurement:
       type: object
+      required:
+      - date
       properties:
+        date:
+          type: string
+          format: date
+          example: '2024-08-14'
         weight_kg:
           type:
           - number

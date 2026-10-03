@@ -374,24 +374,6 @@ components:
                       nullable: true
                       description: Custom metric logged for the set (Currently only used to log floors or steps for stair machine exercises)
                       example: 50
-    DeletedWorkout:
-      type: object
-      required:
-      - type
-      - id
-      properties:
-        type:
-          type: string
-          description: Indicates the type of the event (deleted)
-          example: deleted
-        id:
-          type: string
-          description: The unique identifier of the deleted workout
-          example: efe6801c-4aee-4959-bcdd-fca3f272821b
-        deleted_at:
-          type: string
-          description: A date string indicating when the workout was deleted
-          example: '2021-09-13T12:00:00Z'
     Workout_2:
       type: object
       properties:
@@ -503,6 +485,47 @@ components:
                       - 'null'
                       description: Custom metric logged for the set (Currently only used to log floors or steps for stair machine exercises)
                       example: 50
+    DeletedWorkout:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        type:
+          type: string
+          description: Indicates the type of the event (deleted)
+          example: deleted
+        id:
+          type: string
+          description: The unique identifier of the deleted workout
+          example: efe6801c-4aee-4959-bcdd-fca3f272821b
+        deleted_at:
+          type: string
+          description: A date string indicating when the workout was deleted
+          example: '2021-09-13T12:00:00Z'
+    PostWorkoutsRequestExercise:
+      type: object
+      properties:
+        exercise_template_id:
+          type: string
+          description: The ID of the exercise template.
+          example: D04AC939
+        superset_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the superset.
+          example: null
+        notes:
+          type:
+          - string
+          - 'null'
+          description: Additional notes for the exercise.
+          example: Felt good today. Form was on point.
+        sets:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostWorkoutsRequestSet'
     PostWorkoutsRequestBody:
       type: object
       properties:
@@ -535,6 +558,18 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/PostWorkoutsRequestExercise'
+    UpdatedWorkout:
+      type: object
+      required:
+      - type
+      - workout
+      properties:
+        type:
+          type: string
+          description: Indicates the type of the event (updated)
+          example: updated
+        workout:
+          $ref: '#/components/schemas/Workout_2'
     PaginatedWorkoutEvents:
       type: object
       required:
@@ -557,29 +592,6 @@ components:
             - $ref: '#/components/schemas/UpdatedWorkout'
             - $ref: '#/components/schemas/DeletedWorkout'
           description: An array of workout events (either updated or deleted)
-    PostWorkoutsRequestExercise:
-      type: object
-      properties:
-        exercise_template_id:
-          type: string
-          description: The ID of the exercise template.
-          example: D04AC939
-        superset_id:
-          type:
-          - integer
-          - 'null'
-          description: The ID of the superset.
-          example: null
-        notes:
-          type:
-          - string
-          - 'null'
-          description: Additional notes for the exercise.
-          example: Felt good today. Form was on point.
-        sets:
-          type: array
-          items:
-            $ref: '#/components/schemas/PostWorkoutsRequestSet'
     PostWorkoutsRequestSet:
       type: object
       properties:
@@ -637,18 +649,6 @@ components:
           - 9.5
           - 10
           example: null
-    UpdatedWorkout:
-      type: object
-      required:
-      - type
-      - workout
-      properties:
-        type:
-          type: string
-          description: Indicates the type of the event (updated)
-          example: updated
-        workout:
-          $ref: '#/components/schemas/Workout_2'
 x-refined-from:
 - hevy-gpt-action-openapi.json
 - hevy-public-api-openapi.json
