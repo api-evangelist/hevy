@@ -374,6 +374,170 @@ components:
                       nullable: true
                       description: Custom metric logged for the set (Currently only used to log floors or steps for stair machine exercises)
                       example: 50
+    PostWorkoutsRequestExercise:
+      type: object
+      properties:
+        exercise_template_id:
+          type: string
+          description: The ID of the exercise template.
+          example: D04AC939
+        superset_id:
+          type:
+          - integer
+          - 'null'
+          description: The ID of the superset.
+          example: null
+        notes:
+          type:
+          - string
+          - 'null'
+          description: Additional notes for the exercise.
+          example: Felt good today. Form was on point.
+        sets:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostWorkoutsRequestSet'
+    PaginatedWorkoutEvents:
+      type: object
+      required:
+      - page
+      - page_count
+      - events
+      properties:
+        page:
+          type: integer
+          description: The current page number
+          example: 1
+        page_count:
+          type: integer
+          description: The total number of pages available
+          example: 5
+        events:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/UpdatedWorkout'
+            - $ref: '#/components/schemas/DeletedWorkout'
+          description: An array of workout events (either updated or deleted)
+    UpdatedWorkout:
+      type: object
+      required:
+      - type
+      - workout
+      properties:
+        type:
+          type: string
+          description: Indicates the type of the event (updated)
+          example: updated
+        workout:
+          $ref: '#/components/schemas/Workout_2'
+    PostWorkoutsRequestBody:
+      type: object
+      properties:
+        workout:
+          type: object
+          properties:
+            title:
+              type: string
+              description: The title of the workout.
+              example: Friday Leg Day 🔥
+            description:
+              type:
+              - string
+              - 'null'
+              description: A description for the workout workout.
+              example: Medium intensity leg day focusing on quads.
+            start_time:
+              type: string
+              description: The time the workout started.
+              example: '2024-08-14T12:00:00Z'
+            end_time:
+              type: string
+              description: The time the workout ended.
+              example: '2024-08-14T12:30:00Z'
+            is_private:
+              type: boolean
+              description: A boolean indicating if the workout is private.
+              example: false
+            exercises:
+              type: array
+              items:
+                $ref: '#/components/schemas/PostWorkoutsRequestExercise'
+    PostWorkoutsRequestSet:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of the set.
+          enum:
+          - warmup
+          - normal
+          - failure
+          - dropset
+          example: normal
+        weight_kg:
+          type:
+          - number
+          - 'null'
+          description: The weight in kilograms.
+          example: 100
+        reps:
+          type:
+          - integer
+          - 'null'
+          description: The number of repetitions.
+          example: 10
+        distance_meters:
+          type:
+          - integer
+          - 'null'
+          description: The distance in meters.
+          example: null
+        duration_seconds:
+          type:
+          - integer
+          - 'null'
+          description: The duration in seconds.
+          example: null
+        custom_metric:
+          type:
+          - number
+          - 'null'
+          description: A custom metric for the set. Currently used for steps and floors.
+          example: null
+        rpe:
+          type:
+          - number
+          - 'null'
+          description: The Rating of Perceived Exertion (RPE).
+          enum:
+          - 6
+          - 7
+          - 7.5
+          - 8
+          - 8.5
+          - 9
+          - 9.5
+          - 10
+          example: null
+    DeletedWorkout:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        type:
+          type: string
+          description: Indicates the type of the event (deleted)
+          example: deleted
+        id:
+          type: string
+          description: The unique identifier of the deleted workout
+          example: efe6801c-4aee-4959-bcdd-fca3f272821b
+        deleted_at:
+          type: string
+          description: A date string indicating when the workout was deleted
+          example: '2021-09-13T12:00:00Z'
     Workout_2:
       type: object
       properties:
@@ -485,170 +649,6 @@ components:
                       - 'null'
                       description: Custom metric logged for the set (Currently only used to log floors or steps for stair machine exercises)
                       example: 50
-    DeletedWorkout:
-      type: object
-      required:
-      - type
-      - id
-      properties:
-        type:
-          type: string
-          description: Indicates the type of the event (deleted)
-          example: deleted
-        id:
-          type: string
-          description: The unique identifier of the deleted workout
-          example: efe6801c-4aee-4959-bcdd-fca3f272821b
-        deleted_at:
-          type: string
-          description: A date string indicating when the workout was deleted
-          example: '2021-09-13T12:00:00Z'
-    PostWorkoutsRequestExercise:
-      type: object
-      properties:
-        exercise_template_id:
-          type: string
-          description: The ID of the exercise template.
-          example: D04AC939
-        superset_id:
-          type:
-          - integer
-          - 'null'
-          description: The ID of the superset.
-          example: null
-        notes:
-          type:
-          - string
-          - 'null'
-          description: Additional notes for the exercise.
-          example: Felt good today. Form was on point.
-        sets:
-          type: array
-          items:
-            $ref: '#/components/schemas/PostWorkoutsRequestSet'
-    PostWorkoutsRequestBody:
-      type: object
-      properties:
-        workout:
-          type: object
-          properties:
-            title:
-              type: string
-              description: The title of the workout.
-              example: Friday Leg Day 🔥
-            description:
-              type:
-              - string
-              - 'null'
-              description: A description for the workout workout.
-              example: Medium intensity leg day focusing on quads.
-            start_time:
-              type: string
-              description: The time the workout started.
-              example: '2024-08-14T12:00:00Z'
-            end_time:
-              type: string
-              description: The time the workout ended.
-              example: '2024-08-14T12:30:00Z'
-            is_private:
-              type: boolean
-              description: A boolean indicating if the workout is private.
-              example: false
-            exercises:
-              type: array
-              items:
-                $ref: '#/components/schemas/PostWorkoutsRequestExercise'
-    UpdatedWorkout:
-      type: object
-      required:
-      - type
-      - workout
-      properties:
-        type:
-          type: string
-          description: Indicates the type of the event (updated)
-          example: updated
-        workout:
-          $ref: '#/components/schemas/Workout_2'
-    PaginatedWorkoutEvents:
-      type: object
-      required:
-      - page
-      - page_count
-      - events
-      properties:
-        page:
-          type: integer
-          description: The current page number
-          example: 1
-        page_count:
-          type: integer
-          description: The total number of pages available
-          example: 5
-        events:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/UpdatedWorkout'
-            - $ref: '#/components/schemas/DeletedWorkout'
-          description: An array of workout events (either updated or deleted)
-    PostWorkoutsRequestSet:
-      type: object
-      properties:
-        type:
-          type: string
-          description: The type of the set.
-          enum:
-          - warmup
-          - normal
-          - failure
-          - dropset
-          example: normal
-        weight_kg:
-          type:
-          - number
-          - 'null'
-          description: The weight in kilograms.
-          example: 100
-        reps:
-          type:
-          - integer
-          - 'null'
-          description: The number of repetitions.
-          example: 10
-        distance_meters:
-          type:
-          - integer
-          - 'null'
-          description: The distance in meters.
-          example: null
-        duration_seconds:
-          type:
-          - integer
-          - 'null'
-          description: The duration in seconds.
-          example: null
-        custom_metric:
-          type:
-          - number
-          - 'null'
-          description: A custom metric for the set. Currently used for steps and floors.
-          example: null
-        rpe:
-          type:
-          - number
-          - 'null'
-          description: The Rating of Perceived Exertion (RPE).
-          enum:
-          - 6
-          - 7
-          - 7.5
-          - 8
-          - 8.5
-          - 9
-          - 9.5
-          - 10
-          example: null
 x-refined-from:
 - hevy-gpt-action-openapi.json
 - hevy-public-api-openapi.json
