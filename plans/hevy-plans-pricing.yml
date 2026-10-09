@@ -65,3 +65,21 @@ probed:
 - url: https://www.hevyapp.com/pricing/
   status: 404
   checked: '2026-08-27'
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models: []
+  units: []
+  plans:
+  - name: Hevy (Free)
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods: []
+  - name: Hevy Pro
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods: []
