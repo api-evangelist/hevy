@@ -147,35 +147,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    CreateCustomExerciseRequestBody:
-      type: object
-      properties:
-        exercise:
-          required: true
-          type: object
-          properties:
-            title:
-              type: string
-              description: The title of the exercise template.
-              example: Bench Press
-            exercise_type:
-              $ref: '#/components/schemas/CustomExerciseType'
-            equipment_category:
-              $ref: '#/components/schemas/EquipmentCategory'
-              description: The equipment category of the exercise template.
-              example: barbell
-            muscle_group:
-              $ref: '#/components/schemas/MuscleGroup'
-              description: The muscle group of the exercise template.
-              example: chest
-            other_muscles:
-              type: array
-              items:
-                $ref: '#/components/schemas/MuscleGroup'
-              description: The other muscles of the exercise template.
-              example:
-              - biceps
-              - triceps
     EquipmentCategory:
       type: enum
       enum:
@@ -189,18 +160,6 @@ components:
       - suspension
       - other
       example: barbell
-    CustomExerciseType:
-      type: enum
-      enum:
-      - weight_reps
-      - reps_only
-      - bodyweight_reps
-      - bodyweight_assisted_reps
-      - duration
-      - weight_duration
-      - distance_duration
-      - short_distance_weight
-      example: weight_reps
     ExerciseTemplate:
       type: object
       properties:
@@ -231,6 +190,35 @@ components:
           type: boolean
           description: A boolean indicating whether the exercise is a custom exercise.
           example: false
+    CreateCustomExerciseRequestBody:
+      type: object
+      properties:
+        exercise:
+          required: true
+          type: object
+          properties:
+            title:
+              type: string
+              description: The title of the exercise template.
+              example: Bench Press
+            exercise_type:
+              $ref: '#/components/schemas/CustomExerciseType'
+            equipment_category:
+              $ref: '#/components/schemas/EquipmentCategory'
+              description: The equipment category of the exercise template.
+              example: barbell
+            muscle_group:
+              $ref: '#/components/schemas/MuscleGroup'
+              description: The muscle group of the exercise template.
+              example: chest
+            other_muscles:
+              type: array
+              items:
+                $ref: '#/components/schemas/MuscleGroup'
+              description: The other muscles of the exercise template.
+              example:
+              - biceps
+              - triceps
     MuscleGroup:
       type: enum
       enum:
@@ -255,3 +243,15 @@ components:
       - full_body
       - other
       example: chest
+    CustomExerciseType:
+      type: enum
+      enum:
+      - weight_reps
+      - reps_only
+      - bodyweight_reps
+      - bodyweight_assisted_reps
+      - duration
+      - weight_duration
+      - distance_duration
+      - short_distance_weight
+      example: weight_reps
