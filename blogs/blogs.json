@@ -9,6 +9,13 @@
       "method": "discovered"
     },
     {
+      "source": "https://www.hevyapp.com/blog/feed/",
+      "feed_url": "https://www.hevyapp.com/blog/feed/",
+      "title": "",
+      "saved": 0,
+      "method": "feed"
+    },
+    {
       "source": "https://www.hevyapp.com/feed/",
       "feed_url": "https://www.hevyapp.com/feed/",
       "title": "",
@@ -16,6 +23,6 @@
       "method": "feed"
     }
   ],
-  "post_count": 14,
-  "fetched": "2026-10-10T13:15:00Z"
+  "post_count": 15,
+  "fetched": "2026-10-17T14:53:57Z"
 }
