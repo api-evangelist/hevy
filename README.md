@@ -64,5 +64,127 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Hevy is a company surfaced via the API Evangelist harvest backlog (source: health-device-stack) and added to the network as a stub for full-pipeline profiling.
-- https://www.hevyapp.com
+Hevy is a gym workout tracker and planner app for iOS, Android and the web, operated by Hevy Studios, S.L. and used by a community the company describes as 15+ million lifters. Members log strength-training sessions, build and reuse routines, organize them into folders, browse a large exercise library, and track body measurements and progress over time. Hevy also runs Hevy Coach, a separate product for personal trainers who program and monitor client training. For developers, Hevy Pro subscribers can mint an API key in the web app and call a public REST API at api.hevyapp.com covering workouts, a workout change-feed, routines, routine folders, exercise templates, exercise history, body measurements and account info. The company also publishes a first-party ChatGPT Custom GPT ("Hevy - Gym workout planner") whose OAuth-authenticated action spec it keeps in its own GitHub organization.
+
+**Areas:** Company · Fitness · Health · Workout Tracking · Strength Training · Consumer App · Mobile · Quantified Self · Personal Training · Health Data
+
+## Hevy on APIs.io
+
+Everything profiled for Hevy is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/hevy/](https://apis.io/providers/hevy/)** — or go straight to one of the APIs or properties below.
+
+### APIs (7)
+
+- [Hevy Exercise History API](https://apis.io/apis/hevy/hevy-exercisehistory-api/) — The ExerciseHistory API from Hevy — 1 operation(s) for exercisehistory.
+- [Hevy Exercise Templates API](https://apis.io/apis/hevy/hevy-exercisetemplates-api/) — The ExerciseTemplates API from Hevy — 2 operation(s) for exercisetemplates.
+- [Hevy Measurements API](https://apis.io/apis/hevy/hevy-measurements-api/) — The Measurements API from Hevy — 2 operation(s) for measurements.
+- [Hevy Routine Folders API](https://apis.io/apis/hevy/hevy-routinefolders-api/) — The RoutineFolders API from Hevy — 3 operation(s) for routinefolders.
+- [Hevy Routines API](https://apis.io/apis/hevy/hevy-routines-api/) — The Routines API from Hevy — 3 operation(s) for routines.
+- [Hevy Users API](https://apis.io/apis/hevy/hevy-users-api/) — The Users API from Hevy — 1 operation(s) for users.
+- [Hevy Workouts API](https://apis.io/apis/hevy/hevy-workouts-api/) — The Workouts API from Hevy — 5 operation(s) for workouts.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [hevy-mcp.yml](https://apis.io/servers/hevy/hevy-mcp-yml/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Hevy Public Api Overlay](https://apis.io/overlays/hevy/hevy-public-api-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Hevy Authentication](https://apis.io/security/hevy/hevy-authentication/)
+- [Hevy Domain Security](https://apis.io/security/hevy/hevy-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Hevy Plans Pricing](https://apis.io/plans/hevy/hevy-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Hevy Rate Limits](https://apis.io/rate-limits/hevy/hevy-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.hevyapp.com)
+- [Documentation](https://api.hevyapp.com/docs)
+- [API reference](https://api.hevyapp.com/docs)
+- [Pricing](https://hevy.com/pricing)
+- [Sign up](https://hevy.com/signup)
+- [Support](https://www.hevyapp.com/contact/)
+- [Changelog](https://www.hevyapp.com/community-updates/)
+- [Blog](https://www.hevyapp.com/blog/)
+- [Terms of service](https://www.hevyapp.com/legal/terms-and-conditions/)
+- [Privacy policy](https://www.hevyapp.com/legal/privacy-policy/)
+- [GitHub](https://github.com/hevyapp)
+- [Status](https://www.hevyapp.com/status/)
+
+## API Evangelist rating
+
+**Kin Score 47.7** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 43.4 |
+| Contract governance | 4.5 |
+| Operational transparency | 34.2 |
+| Developer ergonomics | 47.0 |
+| Access clarity | 65.8 |
+
+**Agent readiness 21.7** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | — |
+
+**Regulatory alignment 29.7** — Health
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/hevy/](https://apis.io/providers/hevy/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Hevy: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/hevy/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
